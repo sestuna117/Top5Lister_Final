@@ -4,6 +4,7 @@ import ListCard from './ListCard.js'
 import List from '@mui/material/List';
 import AuthContext from '../auth';
 import DeleteModal from './DeleteModal'
+import NavBar from './NavBar';
 
 /*
     This React component lists all the top5 lists in the UI.
@@ -13,10 +14,6 @@ import DeleteModal from './DeleteModal'
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext)
-
-    useEffect(() => {
-        store.clearTransactions();
-    },[])
 
     useEffect(() => {
         if (!auth.loggedIn || store.idNamePairs === 0) {
@@ -43,6 +40,7 @@ const HomeScreen = () => {
     }
     return (
         <div id="top5-list-selector">
+            <NavBar/>
             <div id="list-selector-list">
                 {
                     listCard
