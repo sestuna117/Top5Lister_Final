@@ -44,7 +44,7 @@ function WorkspaceScreen() {
     }
 
     if (auth.user && store.currentList) {
-        return (auth.user.email === store.currentList.ownerEmail) ? (
+        return (auth.user.username === store.currentList.user) ? (
             <div id="top5-workspace">
                 <div id="workspace-edit">
                     <div id="edit-numbering">

@@ -159,6 +159,20 @@ body {
   float: left;
 }
 
+.navbar {
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+}
+.navbar-left {
+  display: flex;
+}
+.navbar-right {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
 #list-selector-list {
   position: absolute;
   left: 0%;
