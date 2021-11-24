@@ -107,7 +107,7 @@ function AuthContextProvider(props) {
                     }
                 })
                 history.push("/");
-                store.loadIdNamePairs();
+                store.loadListInfo();
             }
         }
         catch (err) {
@@ -132,7 +132,7 @@ function AuthContextProvider(props) {
                     }
                 })
                 history.push("/");
-                store.loadIdNamePairs();
+                store.loadListInfo();
             }
         }
         catch (err) {

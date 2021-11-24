@@ -102,7 +102,7 @@ function NavBar() {
                     name="name"
                     className='list-card'
                     onKeyPress={handleKeyPress}
-                    inputProps={{ style: { fontSize: 18 } }}
+                    inputProps={{ style: { fontSize: 18, backgroundColor: 'white', borderRadius: 5 } }}
                     InputLabelProps={{ style: { fontSize: 18 } }}
                 />
             </div>

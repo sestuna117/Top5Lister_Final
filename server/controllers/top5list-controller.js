@@ -127,11 +127,15 @@ getTop5ListPairs = async (req, res) => {
                 let pair = {
                     _id: list._id,
                     name: list.name,
-                    owner: list.username
+                    owner: list.user,
+                    published: list.published,
+                    views: list.views,
+                    likes: list.likes,
+                    dislikes: list.dislikes
                 };
                 pairs.push(pair);
             }
-            return res.status(200).json({ success: true, idNamePairs: pairs })
+            return res.status(200).json({ success: true, listInfo: pairs })
         }
     }).catch(err => console.log(err))
 }

@@ -16,21 +16,21 @@ const HomeScreen = () => {
     const { auth } = useContext(AuthContext)
 
     useEffect(() => {
-        if (!auth.loggedIn || store.idNamePairs === 0) {
+        if (!auth.loggedIn || store.listInfo === 0) {
             return;
         }
-        store.loadIdNamePairs();
+        store.loadListInfo();
     }, [auth]);
 
     let listCard = "";
     if (store) {
         listCard =
-            <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
+            <List sx={{ width: '90%', left: '5%' }}>
                 {
-                    store.idNamePairs.map((pair) => (
+                    store.listInfo.map((pair) => (
                         <ListCard
                             key={pair._id}
-                            idNamePair={pair}
+                            listInfo={pair}
                             selected={false}
                         />
                     ))
