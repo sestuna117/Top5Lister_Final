@@ -301,6 +301,23 @@ input {
   background-color: #d2d2f0 !important;
 }
 
+.expanded-content {
+  width: 95%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.comments-section {
+  height: 221.75px;
+  width: 50%;
+  margin-left: 5px;
+  background-color: #c9af4f;
+  border-radius: 10px;
+  padding: 8px 0;
+  border: 1px solid black
+}
+
 /* THIS STYLE SHEET MANAGES STYLE FOR OUR MODAL, i.e. DIALOG BOX */
 
 .modal {

@@ -13,6 +13,7 @@ import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button, Typography } from '@mui/material';
 import AuthContext from '../auth';
+import ExpandedContent from './ExpandedContent';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -103,17 +104,20 @@ function ListCard(props) {
                     </IconButton>
                 </Box>
             </div>
-            {listOpened ? <div>Extended Content</div> : null}
+            {listOpened ? <ExpandedContent listInfo={listInfo} /> : null}
             <div className='list-card-footer'>
                 <Box sx={{ p: 1 }}>
                     {listInfo.published ?
                         <Typography>Published: {listInfo.published}</Typography>
-                        : <Button style={{ padding: '0' }} onClick={(event) => { handleEditList(event, listInfo._id) }} disabled={store.isListNameEditActive} aria-label='edit'>
+                        : <Button sx={{ padding: '0', color: 'red', textDecoration: 'underline' ,
+                        ':hover': { bgcolor: 'transparent', color: 'red', boxShadow: 'none', textDecoration: 'underline', fontWeight: 'bold' }}} 
+                        onClick={(event) => { handleEditList(event, listInfo._id) }} 
+                        disabled={store.isListNameEditActive} aria-label='edit'>
                             Edit
                         </Button>}
                 </Box>
                 <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
-                    <Typography>Views: {listInfo.views}</Typography>
+                    <Typography>Views: <span style={{color: '#972c24', fontWeight: 'bold'}}>{listInfo.views}</span></Typography>
                     {listOpened ?
                         <IconButton style={{ padding: '0' }} onClick={(event) => {
                             handleCloseList(event)
