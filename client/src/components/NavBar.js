@@ -5,7 +5,7 @@ import { Button, Fab, Typography } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
 import PersonIcon from '@mui/icons-material/Person';
-import ForumIcon from '@mui/icons-material/Forum';
+import FunctionsIcon from '@mui/icons-material/Functions';
 import SortIcon from '@mui/icons-material/Sort';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
@@ -93,12 +93,12 @@ function NavBar() {
                     <PersonIcon style={{ fontSize: '36pt' }} />
                 </IconButton>
                 <IconButton onClick={handleChangePage} disabled={store.isListNameEditActive} aria-label='edit'>
-                    <ForumIcon style={{ fontSize: '36pt' }} />
+                    <FunctionsIcon style={{ fontSize: '36pt' }} />
                 </IconButton>
                 <TextField
                     required
                     label={"Search"}
-                    style = {{width: 400}}
+                    style={{ width: 400 }}
                     name="name"
                     className='list-card'
                     onKeyPress={handleKeyPress}

@@ -113,10 +113,9 @@ body {
 #top5-list-selector {
   position: absolute;
   left: 0%;
-  top: 10%;
+  top: 8%;
   width: 100%;
   height: 80%;
-  background-color: var(--swatch-primary);
 }
 
 #top5-workspace {
@@ -155,12 +154,18 @@ body {
   justify-content: center;
 }
 
+.list-card-header, .list-card-footer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
 #add-list-button {
   float: left;
 }
 
 .navbar {
-  margin: auto;
+  margin: 5px auto auto auto;
   display: flex;
   justify-content: space-between;
 }
@@ -174,6 +179,7 @@ body {
 }
 
 #list-selector-list {
+  margin-top: 5px;
   position: absolute;
   left: 0%;
   top: 10%;
@@ -291,8 +297,8 @@ input {
   color: var(--swatch-neutral);
 }
 
-.disabled-link {
-  pointer-events: none;
+.published-list {
+  background-color: #d2d2f0 !important;
 }
 
 /* THIS STYLE SHEET MANAGES STYLE FOR OUR MODAL, i.e. DIALOG BOX */

@@ -87,17 +87,17 @@ export default function AppBanner() {
 
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
+            <AppBar position="static" sx={{ backgroundColor: '#e0e0e0' }}>
                 <Toolbar>
                     <Typography
                         variant="h4"
                         noWrap
                         component="div"
-                        sx={{ display: { xs: 'none', sm: 'block' } }}
+                        sx={{ display: { xs: 'none', sm: 'block'} }}
                     >
                         <Link
                             className={store.isItemEditActive || store.isListNameEditActive ? 'disabled-link' : ''}
-                            style={{ textDecoration: 'none', color: 'white' }}
+                            style={{ textDecoration: 'none', color: '#c4b569' }}
                             to='/'>
                             T<sup>5</sup>L
                         </Link>
@@ -112,14 +112,14 @@ export default function AppBanner() {
                             aria-haspopup="true"
                             onClick={handleProfileMenuOpen}
                             color="inherit"
+                            sx={{ color: 'black' }}
                         >
                             {getAccountMenu(auth.loggedIn)}
                         </IconButton> : <Button
                             disabled={store.isItemEditActive || store.isListNameEditActive}
-                            variant="h4"
+                            variant="h5"
                             type="submit"
-                            fullWidth
-                            sx={{ fontSize: 25 }}
+                            sx={{ fontSize: 20, border: '2px solid', borderRadius: 100, color: 'black', backgroundColor: '#a959d0' }}
                             onClick={handleProfileMenuOpen}
                         >
                             {(auth.user.firstName.charAt(0) + auth.user.lastName.charAt(0)).toUpperCase()}

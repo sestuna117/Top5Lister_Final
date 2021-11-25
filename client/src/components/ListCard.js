@@ -4,8 +4,15 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
 import IconButton from '@mui/material/IconButton';
-import EditIcon from '@mui/icons-material/Edit';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import ArrowDropUpIcon from '@mui/icons-material/ArrowDropUp';
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Button, Typography } from '@mui/material';
+import AuthContext from '../auth';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -16,100 +23,115 @@ import DeleteIcon from '@mui/icons-material/Delete';
 */
 function ListCard(props) {
     const { store } = useContext(GlobalStoreContext);
-    const [editActive, setEditActive] = useState(false);
-    const [text, setText] = useState("");
-    const { idNamePair } = props;
+    const { auth } = useContext(AuthContext)
+    const [listOpened, setListOpened] = useState(false);
+    const { listInfo } = props;
 
-    function handleLoadList(event, id) {
+    function handleEditList(event, id) {
         if (!event.target.disabled) {
             // CHANGE THE CURRENT LIST
             store.setCurrentList(id);
         }
     }
 
-    function handleToggleEdit(event) {
+    // Handles a click on the like button
+    const handleLikeList = (event, id) => {
+        store.likeList(id);
+    }
+
+    // Handles a click on the dislike button
+    const handleDislikeList = (event, id) => {
+        store.dislikeList(id);
+    }
+
+    // Handles a click on the dropdown to view a list
+    const handleOpenList = (event, id) => {
+        store.viewList(id)
+        setListOpened(true);
+    }
+
+    // Handles a click on the dropdown to hide a list
+    const handleCloseList = (event) => {
+        setListOpened(false);
+    }
+
+    function handleDeleteList(event, listInfo) {
         event.stopPropagation();
-        toggleEdit();
-    }
-
-    function toggleEdit() {
-        let newActive = !editActive;
-        if (newActive) {
-            store.setIsListNameEditActive();
-        }
-        setEditActive(newActive);
-    }
-
-    function handleDeleteList(event, idNamePair) {
-        event.stopPropagation();
-        store.markListForDeletion(idNamePair);
-    }
-
-    function handleKeyPress(event) {
-        if (event.code === "Enter") {
-            let id = event.target.id.substring("list-".length);
-            let newText = event.target.value;
-            if (text === "") {
-                newText = idNamePair.name;
-            }
-            store.changeListName(id, newText);
-            toggleEdit();
-        }
-    }
-    function handleUpdateText(event) {
-        setText(event.target.value);
+        store.markListForDeletion(listInfo);
     }
 
     let cardElement =
         <ListItem
-            id={idNamePair._id}
-            key={idNamePair._id}
+            id={listInfo._id}
+            key={listInfo._id}
             sx={{ marginTop: '15px', display: 'flex', p: 1 }}
-            button
-            className={store.isListNameEditActive ? 'disabled-link' : ''}
-            onClick={(event) => {
-                handleLoadList(event, idNamePair._id)
-            }
-            }
+            className={listInfo.published ? 'published-list' : ''}
             style={{
-                fontSize: '48pt',
-                width: '100%'
+                width: '100%',
+                backgroundColor: '#fffff2',
+                flexDirection: 'column',
+                borderRadius: 10,
+                border: '1px solid black'
             }}
         >
-            <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton onClick={handleToggleEdit} disabled={store.isListNameEditActive} aria-label='edit'>
-                    <EditIcon style={{ fontSize: '48pt' }} />
-                </IconButton>
-            </Box>
-            <Box sx={{ p: 1 }}>
-                <IconButton onClick={(event) => {
-                    handleDeleteList(event, idNamePair)
-                }} disabled={store.isListNameEditActive} aria-label='delete'>
-                    <DeleteIcon style={{ fontSize: '48pt' }} />
-                </IconButton>
-            </Box>
+            <div className='list-card-header'>
+                <Box sx={{ p: 1 }}>
+                    <Typography>{listInfo.name}</Typography>
+                    <Typography>By: {listInfo.owner}</Typography>
+                </Box>
+                <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
+                    <IconButton className={listInfo.likes.includes(auth.user.username) ? 'is-on' : null} onClick={(event) => {
+                        handleLikeList(event, listInfo._id)
+                    }} disabled={store.isListNameEditActive} aria-label='like'>
+                        {listInfo.likes.includes(auth.user.username) ? 
+                        <ThumbUpIcon style={{ fontSize: '24pt' }} /> 
+                        : <ThumbUpOffAltIcon style={{ fontSize: '24pt' }} />}
+                    </IconButton>
+                    <Typography>{listInfo.likes.length}</Typography>
+                    <IconButton onClick={(event) => {
+                        handleDislikeList(event, listInfo._id)
+                    }} disabled={store.isListNameEditActive} aria-label='dislike'>
+                        {listInfo.dislikes.includes(auth.user.username) ? 
+                        <ThumbDownIcon style={{ fontSize: '24pt' }} /> 
+                        : <ThumbDownOffAltIcon style={{ fontSize: '24pt' }} />}
+                    </IconButton>
+                    <Typography>{listInfo.dislikes.length}</Typography>
+                    <IconButton onClick={(event) => {
+                        handleDeleteList(event, listInfo)
+                    }} disabled={store.isListNameEditActive} aria-label='delete'>
+                        <DeleteIcon style={{ fontSize: '24pt' }} />
+                    </IconButton>
+                </Box>
+            </div>
+            {listOpened ? <div>Extended Content</div> : null}
+            <div className='list-card-footer'>
+                <Box sx={{ p: 1 }}>
+                    {listInfo.published ?
+                        <Typography>Published: {listInfo.published}</Typography>
+                        : <Button style={{ padding: '0' }} onClick={(event) => { handleEditList(event, listInfo._id) }} disabled={store.isListNameEditActive} aria-label='edit'>
+                            Edit
+                        </Button>}
+                </Box>
+                <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
+                    <Typography>Views: {listInfo.views}</Typography>
+                    {listOpened ?
+                        <IconButton style={{ padding: '0' }} onClick={(event) => {
+                            handleCloseList(event)
+                        }}
+                            aria-label='delete'>
+                            <ArrowDropUpIcon style={{ fontSize: '24pt' }} />
+                        </IconButton>
+                        : <IconButton style={{ padding: '0' }} onClick={(event) => {
+                            handleOpenList(event, listInfo._id)
+                        }}
+                            aria-label='delete'>
+                            <ArrowDropDownIcon style={{ fontSize: '24pt' }} />
+                        </IconButton>
+                    }
+                </Box>
+            </div>
         </ListItem>
 
-    if (editActive) {
-        cardElement =
-            <TextField
-                margin="normal"
-                required
-                fullWidth
-                id={"list-" + idNamePair._id}
-                label="Top 5 List Name"
-                name="name"
-                autoComplete="Top 5 List Name"
-                className='list-card'
-                onKeyPress={handleKeyPress}
-                onChange={handleUpdateText}
-                defaultValue={idNamePair.name}
-                inputProps={{ style: { fontSize: 48 } }}
-                InputLabelProps={{ style: { fontSize: 24 } }}
-                autoFocus
-            />
-    }
     return (
         cardElement
     );

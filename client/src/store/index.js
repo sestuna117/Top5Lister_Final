@@ -169,15 +169,15 @@ function GlobalStoreContextProvider(props) {
     // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
 
     // THIS FUNCTION PROCESSES CHANGING A LIST NAME
-    store.changeListName = async function (id, newName) {
+    store.viewList = async function (id) {
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
             let top5List = response.data.top5List;
-            top5List.name = newName;
+            top5List.views++;
             async function updateList(top5List) {
                 response = await api.updateTop5ListById(top5List._id, top5List);
                 if (response.data.success) {
-                    async function getListPairs(top5List) {
+                    async function getListPairs() {
                         response = await api.getTop5ListPairs();
                         if (response.data.success) {
                             let pairsArray = response.data.listInfo.filter(pair => pair.owner === auth.user.username);
@@ -190,6 +190,88 @@ function GlobalStoreContextProvider(props) {
                         }
                     }
                     getListPairs(top5List);
+                }
+            }
+            updateList(top5List);
+        }
+    }
+
+    store.likeList = async function (id) {
+        let response = await api.getTop5ListById(id);
+        if (response.data.success) {
+            let top5List = response.data.top5List;
+            if (top5List.likes.includes(auth.user.username)) {
+                top5List.dislikes = top5List.dislikes.filter(i => i !== auth.user.username)
+                top5List.likes = top5List.likes.filter(i => i !== auth.user.username)
+            }
+            else {
+                top5List.dislikes = top5List.dislikes.filter(i => i !== auth.user.username)
+                top5List.likes = top5List.likes.filter(i => i !== auth.user.username)
+                if (top5List.likes.length === 0) {
+                    top5List.likes = [auth.user.username]
+                }
+                else {
+                    top5List.likes = top5List.likes.push(auth.user.username);
+                }
+            }
+            async function updateList(top5List) {
+                response = await api.updateTop5ListById(top5List._id, top5List);
+                if (response.data.success) {
+                    async function getListPairs() {
+                        response = await api.getTop5ListPairs();
+                        if (response.data.success) {
+                            let pairsArray = response.data.listInfo.filter(pair => pair.owner === auth.user.username);
+                            console.log(pairsArray);
+                            storeReducer({
+                                type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                                payload: {
+                                    listInfo: pairsArray,
+                                }
+                            });
+                        }
+                    }
+                    getListPairs();
+                }
+            }
+            updateList(top5List);
+        }
+    }
+
+    store.dislikeList = async function (id) {
+        let response = await api.getTop5ListById(id);
+        if (response.data.success) {
+            let top5List = response.data.top5List;
+            if (top5List.dislikes.includes(auth.user.username)) {
+                top5List.dislikes = top5List.dislikes.filter(i => i !== auth.user.username)
+                top5List.likes = top5List.likes.filter(i => i !== auth.user.username)
+            }
+            else {
+                top5List.dislikes = top5List.dislikes.filter(i => i !== auth.user.username)
+                top5List.likes = top5List.likes.filter(i => i !== auth.user.username)
+                if (top5List.dislikes.length === 0) {
+                    top5List.dislikes = [auth.user.username]
+                }
+                else {
+                    top5List.dislikes = top5List.dislikes.push(auth.user.username);
+                }
+            }
+            async function updateList(top5List) {
+                response = await api.updateTop5ListById(top5List._id, top5List);
+                if (response.data.success) {
+                    async function getListPairs() {
+                        response = await api.getTop5ListPairs();
+                        if (response.data.success) {
+                            let pairsArray = response.data.listInfo.filter(pair => pair.owner === auth.user.username);
+                            console.log(pairsArray);
+                            storeReducer({
+                                type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                                payload: {
+                                    listInfo: pairsArray,
+                                }
+                            });
+                        }
+                    }
+                    getListPairs();
                 }
             }
             updateList(top5List);
