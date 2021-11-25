@@ -15,7 +15,7 @@ export const GlobalStoreContext = createContext({});
 // THESE ARE ALL THE TYPES OF UPDATES TO OUR GLOBAL
 // DATA STORE STATE THAT CAN BE PROCESSED
 export const GlobalStoreActionType = {
-    CHANGE_LIST_NAME: "CHANGE_LIST_NAME",
+    UPDATE_LIST: "UPDATE_LIST",
     CLOSE_CURRENT_LIST: "CLOSE_CURRENT_LIST",
     CREATE_NEW_LIST: "CREATE_NEW_LIST",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
@@ -51,7 +51,7 @@ function GlobalStoreContextProvider(props) {
         const { type, payload } = action;
         switch (type) {
             // LIST UPDATE OF ITS NAME
-            case GlobalStoreActionType.CHANGE_LIST_NAME: {
+            case GlobalStoreActionType.UPDATE_LIST: {
                 return setStore({
                     listInfo: payload.listInfo,
                     currentList: null,
@@ -182,7 +182,7 @@ function GlobalStoreContextProvider(props) {
                         if (response.data.success) {
                             let pairsArray = response.data.listInfo.filter(pair => pair.owner === auth.user.username);
                             storeReducer({
-                                type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                                type: GlobalStoreActionType.UPDATE_LIST,
                                 payload: {
                                     listInfo: pairsArray,
                                 }
@@ -223,7 +223,7 @@ function GlobalStoreContextProvider(props) {
                             let pairsArray = response.data.listInfo.filter(pair => pair.owner === auth.user.username);
                             console.log(pairsArray);
                             storeReducer({
-                                type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                                type: GlobalStoreActionType.UPDATE_LIST,
                                 payload: {
                                     listInfo: pairsArray,
                                 }
@@ -264,7 +264,40 @@ function GlobalStoreContextProvider(props) {
                             let pairsArray = response.data.listInfo.filter(pair => pair.owner === auth.user.username);
                             console.log(pairsArray);
                             storeReducer({
-                                type: GlobalStoreActionType.CHANGE_LIST_NAME,
+                                type: GlobalStoreActionType.UPDATE_LIST,
+                                payload: {
+                                    listInfo: pairsArray,
+                                }
+                            });
+                        }
+                    }
+                    getListPairs();
+                }
+            }
+            updateList(top5List);
+        }
+    }
+
+    store.addComment = async function (id, comment) {
+        let response = await api.getTop5ListById(id);
+        if (response.data.success) {
+            let top5List = response.data.top5List;
+            if (top5List.comments.length === 0) {
+                top5List.comments = [comment]
+            }
+            else {
+                top5List.comments.push(comment);
+            }
+            async function updateList(top5List) {
+                response = await api.updateTop5ListById(top5List._id, top5List);
+                if (response.data.success) {
+                    async function getListPairs() {
+                        response = await api.getTop5ListPairs();
+                        if (response.data.success) {
+                            let pairsArray = response.data.listInfo.filter(pair => pair.owner === auth.user.username);
+                            console.log(pairsArray);
+                            storeReducer({
+                                type: GlobalStoreActionType.UPDATE_LIST,
                                 payload: {
                                     listInfo: pairsArray,
                                 }

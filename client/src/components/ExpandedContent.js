@@ -1,16 +1,27 @@
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
+import { TextField } from '@mui/material';
 
 function ExpandedContent(props) {
     const { store } = useContext(GlobalStoreContext);
+    const [text, setText] = useState('');
     const { listInfo } = props;
-    console.log(listInfo);
 
-    // Handles loading list when rendered
-    const handleLoadList = (event, id) => {
+    function handleChange(event) {
+        setText(event.target.value)
+      }
 
+    function handleKeyPress(event, id) {
+        if (event.code === "Enter") {
+            console.log(text);
+            if (text === "") {
+                return;
+            }
+            store.addComment(listInfo._id, text);
+            setText('');
+        }
     }
 
     return (
@@ -22,7 +33,15 @@ function ExpandedContent(props) {
                     ))
                 }
             </List>
-            <div className="comments-section">comments</div>
+            <div className="comments-section"><div>
+            </div>comment</div>
+            <TextField
+                id="outlined"
+                placeholder="Add Comment"
+                value={text}
+                onChange={(event) => {handleChange(event)}}
+                onKeyPress={(event) => {handleKeyPress(event)}}
+            />
         </div>
     )
 }

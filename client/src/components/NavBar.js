@@ -97,7 +97,7 @@ function NavBar() {
                 </IconButton>
                 <TextField
                     required
-                    label={"Search"}
+                    placeholder={"Search"}
                     style={{ width: 400 }}
                     name="name"
                     className='list-card'
