@@ -79,7 +79,7 @@ registerUser = async (req, res) => {
                 firstName: savedUser.firstName,
                 lastName: savedUser.lastName,
                 email: savedUser.email,
-                username: existingUser.username,
+                username: savedUser.username,
             }
         }).send();
     } catch (err) {
