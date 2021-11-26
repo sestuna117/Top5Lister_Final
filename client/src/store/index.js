@@ -283,10 +283,10 @@ function GlobalStoreContextProvider(props) {
         if (response.data.success) {
             let top5List = response.data.top5List;
             if (top5List.comments.length === 0) {
-                top5List.comments = [comment]
+                top5List.comments = [[auth.user.username, comment]]
             }
             else {
-                top5List.comments.push(comment);
+                top5List.comments.unshift([auth.user.username, comment]);
             }
             async function updateList(top5List) {
                 response = await api.updateTop5ListById(top5List._id, top5List);
