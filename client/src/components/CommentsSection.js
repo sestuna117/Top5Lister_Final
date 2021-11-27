@@ -13,7 +13,6 @@ function CommentsSection(props) {
 
     function handleKeyPress(event, id) {
         if (event.code === "Enter") {
-            console.log(text);
             if (text === "") {
                 return;
             }
@@ -28,7 +27,7 @@ function CommentsSection(props) {
                 {listInfo.comments.map((comment, index) => (
                     <div className='comment' key={index}>
                         <div style={{ color: '#2d24ef', fontWeight: 'bold', textDecoration: 'underline', fontSize: 12, marginBottom: 5 }}>{comment[0]}</div>
-                        <div style={{ fontSize: 16 }}>{comment[1]}</div>
+                        <div style={{ fontSize: 16, overflowWrap: 'break-word' }}>{comment[1]}</div>
                     </div>
                 ))}
             </div>

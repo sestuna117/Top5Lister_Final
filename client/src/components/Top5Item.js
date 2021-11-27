@@ -1,5 +1,4 @@
-import { React, useContext, useState } from "react";
-import { GlobalStoreContext } from '../store'
+import { React } from "react";
 import TextField from '@mui/material/TextField';
 import { Typography } from "@mui/material";
 /*
@@ -9,11 +8,13 @@ import { Typography } from "@mui/material";
     @author McKilla Gorilla
 */
 function Top5Item(props) {
-    const { store } = useContext(GlobalStoreContext);
-    const [editActive, setEditActive] = useState(false);
-    const [text, setText] = useState("");
-
-    let { index } = props;
+    let { index, changeTexts, texts } = props;
+    
+    function handleChange(event) {
+        let newTexts = texts.slice();
+        newTexts[index+1] = event.target.value;
+        changeTexts(newTexts);
+    }
 
     let itemClass = "top5-item";
 
@@ -22,6 +23,7 @@ function Top5Item(props) {
             <div className="item-number"><Typography variant="h4">{index + 1}.</Typography></div>
             <div style={{ width: '90%', margin: 'auto'}}>
                 <TextField
+                    onChange={handleChange}
                     fullWidth
                     variant='outlined'
                     margin="none"
@@ -29,7 +31,7 @@ function Top5Item(props) {
                     id={'item-' + (index + 1)}
                     name={'item-' + (index + 1)}
                     className={itemClass}
-                    defaultValue={props.text}
+                    value={texts[index + 1]}
                     inputProps={{ style: { fontSize: 24, backgroundColor: '#c9af4f' } }}
                 />
             </div>

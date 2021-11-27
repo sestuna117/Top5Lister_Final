@@ -442,11 +442,13 @@ function GlobalStoreContextProvider(props) {
         store.currentList.items = newItems;
         store.currentList.name = newName;
         store.updateCurrentList();
+        store.closeCurrentList();
     }
 
     store.publishList = function (newName, newItems) {
         store.currentList.items = newItems;
         store.currentList.name = newName;
+        store.currentList.published = new Date().toISOString().slice(0, 10)
         store.updateCurrentList();
         store.closeCurrentList();
     }

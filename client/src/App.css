@@ -115,6 +115,7 @@ body {
 }
 
 #top5-list-selector {
+  background-color: #c4c4c4;
   position: absolute;
   left: 0%;
   top: 8%;

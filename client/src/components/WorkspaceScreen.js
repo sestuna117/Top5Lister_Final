@@ -20,25 +20,66 @@ function WorkspaceScreen() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const [noUser, setNoUser] = useState(false);
-    const [button, setButton] = useState(1);
+    const [texts, setTexts] = useState(['','','','','','']);
+    const [publishable, setPublishable] = useState(false);
+    // console.log(texts);
+    // console.log(publishable);
 
-    const handleSubmit = (event) => {
+    useEffect(() => {
+        if (!store.currentList) {
+            return;
+        }
+        if (!store.currentList.name || !store.currentList.items) {
+            return;
+        }
+        let initTexts = [store.currentList.name]
+        console.log(store.currentList.items)
+        store.currentList.items.forEach(item => {
+            initTexts.push(item);
+        })
+        setTexts(initTexts);
+    },[store.currentList])
+
+    useEffect(() => {
+        if (!texts.length === 6) {
+            return;
+        }
+        checkPublishable();
+    },[texts])
+
+    function handleChange(event) {
+        let newTexts = texts.slice();
+        newTexts[0] = event.target.value;
+        setTexts(newTexts);
+    }
+
+    const checkPublishable = () => {
+        let index = 0;
+        let publish = true;
+        while (index < 6 && publish) {
+            if (!texts[index].charAt(0).match(/^[a-z0-9]+$/i)) {
+                publish = false;
+            }
+            index++;
+        }
+        setPublishable(publish);
+    }
+
+    // Response for when one presses the save button
+    const handleSave = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        let items = [];
-        for(var pair of data.entries()) {
-            items.push(pair[1])
-        }
-        let listName = items.shift();
-        // Response for when one presses the save button
-        if (button === 1) {
-            store.saveList(listName, items)
-        }
-        // Response for when one presses the publish button
-        else if (button === 2) {
-            store.publishList(listName, items)
-        }
-    };
+        let listName = texts[0];
+        let items = texts.slice(1);
+        store.saveList(listName, items)
+    }
+
+    // Response for when one presses the publish button
+    const handlePublish = (event) => {
+        event.preventDefault();
+        let listName = texts[0];
+        let items = texts.slice(1);
+        store.publishList(listName, items)
+    }
 
     useEffect(() => {
         store.setCurrentList(id).then(gotList => {
@@ -52,9 +93,10 @@ function WorkspaceScreen() {
         return (auth.user.username === store.currentList.user) ? (
             <div id="top5-workspace">
                 <NavBar />
-                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                <Box component="form" noValidate sx={{ mt: 1 }}>
                     <div id="workspace-edit">
                         <TextField
+                            onChange={handleChange}
                             margin="none"
                             required
                             id='list-name'
@@ -71,13 +113,14 @@ function WorkspaceScreen() {
                                 store.currentList.items.map((item, index) => (
                                     <Top5Item
                                         key={'top5-item-' + (index + 1)}
-                                        text={item}
+                                        texts={texts}
+                                        changeTexts={setTexts}
                                         index={index}
                                     />
                                 ))
                             }
                         </div>
-                        <EditToolbar selectButton={setButton} />
+                        <EditToolbar handleSave={handleSave} handlePublish={handlePublish} publishable={publishable} />
                     </div>
                 </Box>
             </div>

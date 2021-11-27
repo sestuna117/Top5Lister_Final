@@ -77,8 +77,8 @@ function ListCard(props) {
         >
             <div className='list-card-header'>
                 <Box sx={{ p: 1 }}>
-                    <Typography>{listInfo.name}</Typography>
-                    <Typography>By: {listInfo.owner}</Typography>
+                    <Typography fontWeight='bold'>{listInfo.name}</Typography>
+                    <Typography sx={{fontSize: 14}}>By: {<span>{listInfo.owner}</span>}</Typography>
                 </Box>
                 <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
                     <IconButton className={listInfo.likes.includes(auth.user.username) ? 'is-on' : null} onClick={(event) => {
@@ -106,9 +106,9 @@ function ListCard(props) {
             </div>
             {listOpened ? <ExpandedContent listInfo={listInfo} /> : null}
             <div className='list-card-footer'>
-                <Box sx={{ p: 1 }}>
+                <Box sx={{ p: 1, marginTop: '10px' }}>
                     {listInfo.published !== 'false' ?
-                        <Typography>Published: {listInfo.published}</Typography>
+                        <Typography sx={{fontSize: 14, fontWeight: 'bold'}}>Published: <span style={{color: '#79ae5a'}}>{listInfo.published}</span></Typography>
                         : <Button sx={{ padding: '0', color: 'red', textDecoration: 'underline' ,
                         ':hover': { bgcolor: 'transparent', color: 'red', boxShadow: 'none', textDecoration: 'underline', fontWeight: 'bold' }}} 
                         onClick={(event) => { handleEditList(event, listInfo._id) }} 
@@ -117,7 +117,7 @@ function ListCard(props) {
                         </Button>}
                 </Box>
                 <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
-                    <Typography>Views: <span style={{color: '#972c24', fontWeight: 'bold'}}>{listInfo.views}</span></Typography>
+                    <Typography sx={{fontSize: 14}}>Views: <span style={{color: '#972c24', fontWeight: 'bold'}}>{listInfo.views}</span></Typography>
                     {listOpened ?
                         <IconButton style={{ padding: '0' }} onClick={(event) => {
                             handleCloseList(event)
