@@ -66,7 +66,7 @@ function ListCard(props) {
             id={listInfo._id}
             key={listInfo._id}
             sx={{ marginTop: '15px', display: 'flex', p: 1 }}
-            className={listInfo.published.length === 0 ? 'published-list' : ''}
+            className={listInfo.published !== 'false' ? 'published-list' : ''}
             style={{
                 width: '100%',
                 backgroundColor: '#fffff2',
@@ -107,7 +107,7 @@ function ListCard(props) {
             {listOpened ? <ExpandedContent listInfo={listInfo} /> : null}
             <div className='list-card-footer'>
                 <Box sx={{ p: 1 }}>
-                    {listInfo.published.length === 0 ?
+                    {listInfo.published !== 'false' ?
                         <Typography>Published: {listInfo.published}</Typography>
                         : <Button sx={{ padding: '0', color: 'red', textDecoration: 'underline' ,
                         ':hover': { bgcolor: 'transparent', color: 'red', boxShadow: 'none', textDecoration: 'underline', fontWeight: 'bold' }}} 

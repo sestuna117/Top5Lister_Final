@@ -438,31 +438,17 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
-    store.moveItem = function (start, end) {
-        start -= 1;
-        end -= 1;
-        if (start < end) {
-            let temp = store.currentList.items[start];
-            for (let i = start; i < end; i++) {
-                store.currentList.items[i] = store.currentList.items[i + 1];
-            }
-            store.currentList.items[end] = temp;
-        }
-        else if (start > end) {
-            let temp = store.currentList.items[start];
-            for (let i = start; i > end; i--) {
-                store.currentList.items[i] = store.currentList.items[i - 1];
-            }
-            store.currentList.items[end] = temp;
-        }
-
-        // NOW MAKE IT OFFICIAL
+    store.saveList = function (newName, newItems) {
+        store.currentList.items = newItems;
+        store.currentList.name = newName;
         store.updateCurrentList();
     }
 
-    store.updateItem = function (index, newItem) {
-        store.currentList.items[index] = newItem;
+    store.publishList = function (newName, newItems) {
+        store.currentList.items = newItems;
+        store.currentList.name = newName;
         store.updateCurrentList();
+        store.closeCurrentList();
     }
 
     store.updateCurrentList = async function () {

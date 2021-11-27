@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from 'react'
 import Top5Item from './Top5Item.js'
-import List from '@mui/material/List';
-import { Typography } from '@mui/material'
+import { TextField } from '@mui/material'
 import { GlobalStoreContext } from '../store/index.js'
 import { useParams } from "react-router-dom";
 import AuthContext from '../auth'
 import UnauthModal from './UnauthModal.js'
+import { Box } from '@mui/system';
+import EditToolbar from './EditToolbar.js';
+import NavBar from './NavBar.js';
 
 /*
     This React component lets us edit a loaded list, which only
@@ -18,6 +20,25 @@ function WorkspaceScreen() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const [noUser, setNoUser] = useState(false);
+    const [button, setButton] = useState(1);
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        let items = [];
+        for(var pair of data.entries()) {
+            items.push(pair[1])
+        }
+        let listName = items.shift();
+        // Response for when one presses the save button
+        if (button === 1) {
+            store.saveList(listName, items)
+        }
+        // Response for when one presses the publish button
+        else if (button === 2) {
+            store.publishList(listName, items)
+        }
+    };
 
     useEffect(() => {
         store.setCurrentList(id).then(gotList => {
@@ -27,35 +48,38 @@ function WorkspaceScreen() {
         })
     }, [])
 
-    let editItems = "";
-    if (store.currentList) {
-        editItems =
-            <List id="edit-items" sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                {
-                    store.currentList.items.map((item, index) => (
-                        <Top5Item
-                            key={'top5-item-' + (index + 1)}
-                            text={item}
-                            index={index}
-                        />
-                    ))
-                }
-            </List>;
-    }
-
     if (auth.user && store.currentList) {
         return (auth.user.username === store.currentList.user) ? (
             <div id="top5-workspace">
-                <div id="workspace-edit">
-                    <div id="edit-numbering">
-                        <div className="item-number"><Typography variant="h3">1.</Typography></div>
-                        <div className="item-number"><Typography variant="h3">2.</Typography></div>
-                        <div className="item-number"><Typography variant="h3">3.</Typography></div>
-                        <div className="item-number"><Typography variant="h3">4.</Typography></div>
-                        <div className="item-number"><Typography variant="h3">5.</Typography></div>
+                <NavBar />
+                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <div id="workspace-edit">
+                        <TextField
+                            margin="none"
+                            required
+                            id='list-name'
+                            name='list-name'
+                            size='small'
+                            name="name"
+                            className='list-name'
+                            defaultValue={store.currentList.name}
+                            sx={{ margin: '10px' }}
+                            inputProps={{ style: { fontSize: 16, backgroundColor: 'white' } }}
+                        />
+                        <div className='top5-item-list'>
+                            {
+                                store.currentList.items.map((item, index) => (
+                                    <Top5Item
+                                        key={'top5-item-' + (index + 1)}
+                                        text={item}
+                                        index={index}
+                                    />
+                                ))
+                            }
+                        </div>
+                        <EditToolbar selectButton={setButton} />
                     </div>
-                    {editItems}
-                </div>
+                </Box>
             </div>
         ) :
             <UnauthModal />
