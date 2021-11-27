@@ -1,9 +1,7 @@
 import { useContext } from 'react'
 import { GlobalStoreContext } from '../store'
 import Button from '@mui/material/Button';
-import UndoIcon from '@mui/icons-material/Undo';
-import RedoIcon from '@mui/icons-material/Redo';
-import CloseIcon from '@mui/icons-material/HighlightOff';
+import { Typography } from '@mui/material';
 
 /*
     This toolbar is a functional React component that
@@ -11,18 +9,10 @@ import CloseIcon from '@mui/icons-material/HighlightOff';
     
     @author McKilla Gorilla
 */
-function EditToolbar() {
+function EditToolbar(props) {
+    const { selectButton } = props
     const { store } = useContext(GlobalStoreContext);
 
-    function handleUndo() {
-        store.undo();
-    }
-    function handleRedo() {
-        store.redo();
-    }
-    function handleClose() {
-        store.closeCurrentList();
-    }
     let editStatus = false;
     if (store.isItemEditActive || !store.currentList) {
         editStatus = true;
@@ -30,25 +20,35 @@ function EditToolbar() {
     return (
         <div id="edit-toolbar">
             <Button
-                disabled={!store.canUndo() || editStatus}
-                id='undo-button'
-                onClick={store.canUndo() ? handleUndo : null}
-                variant="contained">
-                <UndoIcon />
+                onClick={() => { selectButton(1) }}
+                type="submit"
+                id='save-button'
+                // onClick={null}
+                variant="contained"
+                sx={{
+                    backgroundColor: '#dddddd', color: 'black', boxShadow: 'none', border: '1px black solid', marginRight: '10px',
+                    ':hover': { bgcolor: '#dddddd', color: 'black', boxShadow: 'none' }
+                }}>
+                <Typography
+                    sx={{ fontWeight: 'bold' }}>
+                    Save
+                </Typography>
             </Button>
             <Button
-                disabled={!store.canRedo() || editStatus}
-                id='redo-button'
-                onClick={store.canRedo() ? handleRedo : null}
-                variant="contained">
-                <RedoIcon />
-            </Button>
-            <Button
-                disabled={editStatus}
-                id='close-button'
-                onClick={!editStatus ? handleClose : null}
-                variant="contained">
-                <CloseIcon />
+                onClick={() => { selectButton(2) }}
+                type="submit"
+                // disabled={editStatus}
+                id='publish-button'
+                // onClick={!editStatus ? handleClose : null}
+                variant="contained"
+                sx={{
+                    backgroundColor: '#dddddd', color: 'black', boxShadow: 'none', border: '1px black solid', marginRight: '20px',
+                    ':hover': { bgcolor: '#dddddd', color: 'black', boxShadow: 'none' }
+                }}>
+                <Typography
+                    sx={{ fontWeight: 'bold' }}>
+                    Publish
+                </Typography>
             </Button>
         </div>
     )

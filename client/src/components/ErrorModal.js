@@ -5,7 +5,7 @@ import AuthContext from '../auth';
 function ErrorModal() {
     const { auth, closeErrorMsg } = useContext(AuthContext);
     let msg = "";
-    if (auth.errorMsg.length) {
+    if (auth.errorMsg) {
         if (auth.errorMsg.length !== 0)
             msg = auth.errorMsg;
     }

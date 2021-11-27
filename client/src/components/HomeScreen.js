@@ -1,11 +1,10 @@
 import React, { useContext, useEffect } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
-import { Fab, Typography } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add';
 import List from '@mui/material/List';
 import AuthContext from '../auth';
 import DeleteModal from './DeleteModal'
+import NavBar from './NavBar';
 
 /*
     This React component lists all the top5 lists in the UI.
@@ -17,28 +16,21 @@ const HomeScreen = () => {
     const { auth } = useContext(AuthContext)
 
     useEffect(() => {
-        store.clearTransactions();
-    },[])
-
-    useEffect(() => {
-        if (!auth.loggedIn || store.idNamePairs === 0) {
+        if (!auth.loggedIn || store.listInfo === 0) {
             return;
         }
-        store.loadIdNamePairs();
+        store.loadListInfo();
     }, [auth]);
 
-    function handleCreateNewList() {
-        store.createNewList();
-    }
     let listCard = "";
     if (store) {
         listCard =
-            <List sx={{ width: '90%', left: '5%', bgcolor: 'background.paper' }}>
+            <List sx={{ width: '90%', left: '5%' }}>
                 {
-                    store.idNamePairs.map((pair) => (
+                    store.listInfo.map((pair) => (
                         <ListCard
                             key={pair._id}
-                            idNamePair={pair}
+                            listInfo={pair}
                             selected={false}
                         />
                     ))
@@ -48,18 +40,7 @@ const HomeScreen = () => {
     }
     return (
         <div id="top5-list-selector">
-            <div id="list-selector-heading">
-                <Fab
-                    color="primary"
-                    aria-label="add"
-                    id="add-list-button"
-                    onClick={handleCreateNewList}
-                    disabled={store.isListNameEditActive}
-                >
-                    <AddIcon />
-                </Fab>
-                <Typography variant="h2">Your Lists</Typography>
-            </div>
+            <NavBar/>
             <div id="list-selector-list">
                 {
                     listCard

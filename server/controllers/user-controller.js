@@ -10,7 +10,8 @@ getLoggedIn = async (req, res) => {
             user: {
                 firstName: loggedInUser.firstName,
                 lastName: loggedInUser.lastName,
-                email: loggedInUser.email
+                email: loggedInUser.email,
+                username: loggedInUser.username,
             }
         }).send();
     })
@@ -53,7 +54,7 @@ registerUser = async (req, res) => {
                 .status(400)
                 .json({
                     success: false,
-                    errorMessage: "An account with this username already exists."
+                    errorMessage: "This username is already taken."
                 })
         }
 
@@ -62,7 +63,7 @@ registerUser = async (req, res) => {
         const passwordHash = await bcrypt.hash(password, salt);
 
         const newUser = new User({
-            firstName, lastName, email, passwordHash
+            firstName, lastName, username, email, passwordHash
         });
         const savedUser = await newUser.save();
 
@@ -77,7 +78,8 @@ registerUser = async (req, res) => {
             user: {
                 firstName: savedUser.firstName,
                 lastName: savedUser.lastName,
-                email: savedUser.email
+                email: savedUser.email,
+                username: savedUser.username,
             }
         }).send();
     } catch (err) {
@@ -124,7 +126,8 @@ loginUser = async (req, res) => {
         user: {
             firstName: existingUser.firstName,
             lastName: existingUser.lastName,
-            email: existingUser.email
+            email: existingUser.email,
+            username: existingUser.username,
         }
     }).send();
 }
