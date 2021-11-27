@@ -23,6 +23,19 @@ function NavBar() {
     const { auth } = useContext(AuthContext);
     const [anchorEl, setAnchorEl] = useState(null)
     const isMenuOpen = Boolean(anchorEl);
+    const [text, setText] = useState('');
+    
+    // Response for when a keyboard key is pressed in search bar
+    function handleChange(event) {
+        setText(event.target.value)
+    }
+
+    // Response for when one presses the "Enter" key
+    function handleKeyPress(event) {
+        if (event.code === "Enter") {
+            store.setFilter(text);
+        }
+    }
 
     const handleSortMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
@@ -34,16 +47,6 @@ function NavBar() {
 
     const handleSort = () => {
         handleMenuClose();
-    }
-
-    // Response for when a keyboard key is pressed in search bar
-    const handleKeyPress = (event) => {
-
-    }
-
-    // Response for when one presses the "Enter" key
-    const handleOnEnter = (event) => {
-
     }
 
     // Response for when one presses a list page icon
@@ -97,6 +100,7 @@ function NavBar() {
                 </IconButton>
                 <TextField
                     required
+                    onChange={handleChange}
                     placeholder={"Search"}
                     style={{ width: 400 }}
                     name="name"

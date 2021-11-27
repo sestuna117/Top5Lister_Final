@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import List from '@mui/material/List';
@@ -14,6 +14,16 @@ import NavBar from './NavBar';
 const HomeScreen = () => {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext)
+    const [lists, setLists] = useState([])
+
+    useEffect(() => {
+        if (!store) {
+            return;
+        }
+        let ownedLists = store.listInfo.filter(pair => pair.owner === auth.user.username)
+            .filter(list => list.name.includes(store.filter)).slice();
+        setLists(ownedLists);
+    }, [store])
 
     useEffect(() => {
         if (!auth.loggedIn || store.listInfo === 0) {
@@ -22,29 +32,22 @@ const HomeScreen = () => {
         store.loadListInfo();
     }, [auth]);
 
-    let listCard = "";
-    if (store) {
-        listCard =
-            <List sx={{ width: '90%', left: '5%' }}>
-                {
-                    store.listInfo.map((pair) => (
-                        <ListCard
-                            key={pair._id}
-                            listInfo={pair}
-                            selected={false}
-                        />
-                    ))
-                }
-                <DeleteModal />
-            </List>;
-    }
     return (
         <div id="top5-list-selector">
-            <NavBar/>
+            <NavBar />
             <div id="list-selector-list">
-                {
-                    listCard
-                }
+                <List sx={{ width: '90%', left: '5%' }}>
+                    {
+                        lists.map((pair) => (
+                            <ListCard
+                                key={pair._id}
+                                listInfo={pair}
+                                selected={false}
+                            />
+                        ))
+                    }
+                    <DeleteModal />
+                </List>
             </div>
         </div>)
 }
