@@ -1,7 +1,7 @@
 import { useContext } from 'react'
 import { GlobalStoreContext } from '../store'
 import AuthContext from '../auth';
-import { Fab, Typography } from '@mui/material'
+import { Fab, IconButton, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 
 /*
@@ -24,15 +24,16 @@ function Statusbar() {
         }
     return auth.user ? (
         <div id="list-selector-heading">
-            <Fab
+            <IconButton
+                sx={{backgroundColor: 'transparent'}}
                 color="primary"
                 aria-label="add"
                 id="add-list-button"
                 onClick={handleCreateNewList}
                 disabled={store.isListNameEditActive}
             >
-                <AddIcon />
-            </Fab>
+                <AddIcon  style={{ fontSize: '24pt', color: 'black' }} />
+            </IconButton>
             <Typography variant="h2">Your Lists</Typography>
         </div>
     ) : (
