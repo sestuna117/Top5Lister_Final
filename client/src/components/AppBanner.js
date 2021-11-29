@@ -94,7 +94,7 @@ export default function AppBanner() {
                         <Link
                             className={store.currentList ? 'disabled-link' : ''}
                             style={{ textDecoration: 'none', color: '#c4b569' }}
-                            to='/'>
+                            to={auth.user ? auth.user.username === ' ' ? '/community' : '/' : '/'}>
                             T<sup>5</sup>L
                         </Link>
                     </Typography>

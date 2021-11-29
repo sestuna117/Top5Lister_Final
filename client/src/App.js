@@ -30,7 +30,7 @@ const App = () => {
     const { auth } = useContext(AuthContext)
 
     useEffect(() => {
-        if (store.listInfo === 0) {
+        if (!auth.loggedIn || store.listInfo === 0) {
             return;
         }
         store.loadListInfo();

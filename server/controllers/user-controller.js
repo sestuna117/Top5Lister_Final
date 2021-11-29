@@ -17,6 +17,64 @@ getLoggedIn = async (req, res) => {
     })
 }
 
+createGuest = async (req, res) => {
+    try {
+        const { firstName, lastName, email, username, password } = req.body;
+        const existingUser = await User.findOne({ username: username });
+        if (existingUser) {
+            return res
+                .status(200)
+                .json({
+                    success: false,
+                    errorMessage: "Guest acc already exists."
+                })
+        }
+
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+        const passwordHash = await bcrypt.hash(password, salt);
+
+        const newUser = new User({
+            firstName, lastName, username, email, passwordHash
+        });
+        const savedUser = await newUser.save();
+    } catch (err) {
+        console.error(err);
+        res.status(500).send();
+    }
+}
+
+loginGuest = async (req, res) => {
+    const { email, password } = req.body;
+
+    const existingUser = await User.findOne({ email: email });
+    const correctPass = await bcrypt.compare(password, existingUser.passwordHash);
+
+    // LOGIN THE USER
+    const token = auth.signToken(existingUser);
+    if (!correctPass) {
+        return res
+            .status(401)
+            .json({
+                success: false,
+                errorMessage: "Wrong email or password."
+            })
+    }
+
+    await res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+    }).status(200).json({
+        success: true,
+        user: {
+            firstName: existingUser.firstName,
+            lastName: existingUser.lastName,
+            email: existingUser.email,
+            username: existingUser.username,
+        }
+    }).send();
+}
+
 registerUser = async (req, res) => {
     try {
         const { firstName, lastName, email, username, password, passwordVerify } = req.body;
@@ -146,5 +204,7 @@ module.exports = {
     getLoggedIn,
     registerUser,
     loginUser,
-    logoutUser
+    logoutUser,
+    createGuest,
+    loginGuest
 }

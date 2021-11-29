@@ -2,7 +2,6 @@ import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import AuthContext from '../auth';
 import { Button, Typography } from '@mui/material'
-import { useLocation } from "react-router-dom";
 import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
 import PersonIcon from '@mui/icons-material/Person';
@@ -88,7 +87,7 @@ function NavBar() {
     return (
         <div className='navbar'>
             <div className='navbar-left'>
-                <IconButton onClick={(event) => {handleChangePage(event, '/')}} disabled={store.currentList || !auth.user} aria-label='edit'>
+                <IconButton onClick={(event) => {handleChangePage(event, '/')}} disabled={store.currentList || auth.user.username === ' '} aria-label='edit'>
                     <HomeIcon style={{ fontSize: '36pt' }} />
                 </IconButton>
                 <IconButton onClick={(event) => {handleChangePage(event, '/all')}} disabled={store.currentList} aria-label='edit'>
