@@ -1,9 +1,11 @@
 import { TextField } from "@mui/material"
 import { useState, useContext } from "react";
+import AuthContext from "../auth";
 import GlobalStoreContext from "../store";
 
 function CommentsSection(props) {
     const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext);
     const [text, setText] = useState('');
     const { listInfo } = props;
 
@@ -36,6 +38,7 @@ function CommentsSection(props) {
                 placeholder="Add Comment"
                 value={text}
                 fullWidth
+                disabled={auth.user ? auth.user.username === ' ' : false } 
                 sx={{ backgroundColor: 'white' }}
                 onChange={(event) => { handleChange(event) }}
                 onKeyPress={(event) => { handleKeyPress(event) }}

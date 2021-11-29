@@ -3,6 +3,7 @@ import { GlobalStoreContext } from '../store'
 import AuthContext from '../auth';
 import { Fab, IconButton, Typography } from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
+import { useLocation } from 'react-router';
 
 /*
     Our Status bar React component goes at the bottom of our UI.
@@ -12,6 +13,7 @@ import AddIcon from '@mui/icons-material/Add';
 function Statusbar() {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
+    let location = useLocation();
 
     function handleCreateNewList() {
         store.createNewList();
@@ -22,7 +24,10 @@ function Statusbar() {
         if (store.currentList.ownerEmail === auth.user.email) {
             text = store.currentList.name;
         }
-    return auth.user ? (
+    return (location.pathname === '/community' ? (
+        <div id="top5-statusbar">
+            <Typography variant="h4">Community Lists</Typography>
+        </div>) : location.pathname === '/' ? (
         <div id="list-selector-heading">
             <IconButton
                 sx={{backgroundColor: 'transparent'}}
@@ -30,7 +35,7 @@ function Statusbar() {
                 aria-label="add"
                 id="add-list-button"
                 onClick={handleCreateNewList}
-                disabled={store.currentList}
+                disabled={store.currentList || !auth.user}
             >
                 <AddIcon  style={{ fontSize: '24pt', color: 'black' }} />
             </IconButton>
@@ -38,9 +43,9 @@ function Statusbar() {
         </div>
     ) : (
         <div id="top5-statusbar">
-            <Typography variant="h4">{text}</Typography>
+            <Typography variant="h4">{store.filter}</Typography>
         </div>
-    );
+    ));
 }
 
 export default Statusbar;

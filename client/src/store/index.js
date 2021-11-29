@@ -25,7 +25,8 @@ export const GlobalStoreActionType = {
     SET_ITEM_EDIT_ACTIVE: "SET_ITEM_EDIT_ACTIVE",
     SET_LIST_NAME_EDIT_ACTIVE: "SET_LIST_NAME_EDIT_ACTIVE",
     CLOSE_TOP5LIST: "CLOSE_TOP5LIST",
-    SET_FILTER: "SET_FILTER"
+    SET_FILTER: "SET_FILTER",
+    CHANGE_PAGE: "CHANGE_PAGE"
 }
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -92,7 +93,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.LOAD_ID_NAME_PAIRS: {
                 return setStore({
                     listInfo: payload,
-                    currentList: null,
+                    currentList: store.currentList,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
@@ -182,6 +183,17 @@ function GlobalStoreContextProvider(props) {
                     filter: payload,
                 });
             }
+            case GlobalStoreActionType.CHANGE_PAGE: {
+                return setStore({
+                    listInfo: store.listInfo,
+                    currentList: null,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null,
+                    filter: "",
+                });
+            }
             default:
                 return store;
         }
@@ -223,9 +235,6 @@ function GlobalStoreContextProvider(props) {
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
             let top5List = response.data.top5List;
-            console.log(top5List.likes);
-            console.log(auth.user.username);
-            console.log(top5List.likes.includes(auth.user.username));
             if (top5List.likes.includes(auth.user.username)) {
                 top5List.dislikes = top5List.dislikes.filter(i => i !== auth.user.username)
                 top5List.likes = top5List.likes.filter(i => i !== auth.user.username)
@@ -233,7 +242,6 @@ function GlobalStoreContextProvider(props) {
             else {
                 top5List.dislikes = top5List.dislikes.filter(i => i !== auth.user.username)
                 top5List.likes = top5List.likes.filter(i => i !== auth.user.username)
-                console.log(top5List.likes);
                 if (top5List.likes.length === 0) {
                     top5List.likes = [auth.user.username]
                 }
@@ -292,7 +300,6 @@ function GlobalStoreContextProvider(props) {
                         response = await api.getTop5ListPairs();
                         if (response.data.success) {
                             let pairsArray = response.data.listInfo;
-                            console.log(pairsArray);
                             storeReducer({
                                 type: GlobalStoreActionType.UPDATE_LIST,
                                 payload: {
@@ -325,7 +332,6 @@ function GlobalStoreContextProvider(props) {
                         response = await api.getTop5ListPairs();
                         if (response.data.success) {
                             let pairsArray = response.data.listInfo;
-                            console.log(pairsArray);
                             storeReducer({
                                 type: GlobalStoreActionType.UPDATE_LIST,
                                 payload: {
@@ -343,6 +349,10 @@ function GlobalStoreContextProvider(props) {
 
     store.changePage = function (path) {
         history.push(path)
+        storeReducer({
+            type: GlobalStoreActionType.CHANGE_PAGE,
+            payload: {}
+        });
     }
 
     store.setFilter = function (filterStr) {
@@ -365,7 +375,17 @@ function GlobalStoreContextProvider(props) {
             type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
             payload: {}
         });
-        history.push("/");
+        if (auth.user) {
+            if (auth.user.username === ' ') {
+                history.push("/community");
+            }
+            else {
+                history.push("/");
+            }
+        }
+        else {
+            history.push("/");
+        }
     }
 
     // THIS FUNCTION CREATES A NEW LIST
@@ -463,7 +483,6 @@ function GlobalStoreContextProvider(props) {
             let response = await api.getTop5ListById(id);
             if (response.data.success) {
                 let top5List = response.data.top5List;
-
                 response = await api.updateTop5ListById(top5List._id, top5List);
                 if (response.data.success) {
                     storeReducer({
@@ -484,6 +503,7 @@ function GlobalStoreContextProvider(props) {
         store.currentList.name = newName;
         store.updateCurrentList();
         store.closeCurrentList();
+        store.loadListInfo();
     }
 
     store.publishList = function (newName, newItems) {
@@ -492,13 +512,14 @@ function GlobalStoreContextProvider(props) {
         store.currentList.published = new Date().toISOString().slice(0, 10)
         store.updateCurrentList();
         store.closeCurrentList();
+        store.loadListInfo();
     }
 
     store.updateCurrentList = async function () {
         const response = await api.updateTop5ListById(store.currentList._id, store.currentList);
         if (response.data.success) {
             storeReducer({
-                type: GlobalStoreActionType.SET_CURRENT_LIST,
+                type: GlobalStoreActionType.CLOSE_CURRENT_LIST,
                 payload: store.currentList
             });
         }

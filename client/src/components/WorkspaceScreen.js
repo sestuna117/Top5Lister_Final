@@ -22,8 +22,6 @@ function WorkspaceScreen() {
     const [noUser, setNoUser] = useState(false);
     const [texts, setTexts] = useState(['','','','','','']);
     const [publishable, setPublishable] = useState(false);
-    // console.log(texts);
-    // console.log(publishable);
 
     useEffect(() => {
         if (!store.currentList) {
@@ -33,7 +31,6 @@ function WorkspaceScreen() {
             return;
         }
         let initTexts = [store.currentList.name]
-        console.log(store.currentList.items)
         store.currentList.items.forEach(item => {
             initTexts.push(item);
         })
@@ -82,12 +79,12 @@ function WorkspaceScreen() {
     }
 
     useEffect(() => {
-        store.setCurrentList(id).then(gotList => {
-            if (!gotList) {
-                setNoUser(true);
-            }
-        })
-    }, [])
+        if (!auth.user) {
+            setNoUser(true);
+        }
+        store.setCurrentList(id);
+        setNoUser(false);
+    }, [auth.user])
 
     if (auth.user && store.currentList) {
         return (auth.user.username === store.currentList.user) ? (
@@ -125,7 +122,7 @@ function WorkspaceScreen() {
                 </Box>
             </div>
         ) :
-            <UnauthModal />
+            <UnauthModal revert={true} />
     }
     else {
         return noUser ? <UnauthModal /> : null

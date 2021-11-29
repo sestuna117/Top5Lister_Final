@@ -17,6 +17,10 @@ const HomeScreen = () => {
     const [lists, setLists] = useState([])
 
     useEffect(() => {
+        store.loadListInfo();
+    }, []);
+
+    useEffect(() => {
         if (!store) {
             return;
         }

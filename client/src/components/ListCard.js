@@ -85,7 +85,7 @@ function ListCard(props) {
                 <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
                     <IconButton className={auth.user ? listInfo.likes.includes(auth.user.username) ? 'is-on' : null : null} onClick={(event) => {
                         handleLikeList(event, listInfo._id)
-                    }} aria-label='like'>
+                    }} aria-label='like' disabled={auth.user ? auth.user.username === ' ' || auth.user.username === listInfo.owner : false } >
                         {auth.user ? listInfo.likes.includes(auth.user.username) ? 
                         <ThumbUpIcon style={{ fontSize: '24pt' }} /> 
                         : <ThumbUpOffAltIcon style={{ fontSize: '24pt' }} /> : <ThumbUpOffAltIcon style={{ fontSize: '24pt' }} />}
@@ -93,7 +93,7 @@ function ListCard(props) {
                     <Typography>{listInfo.likes.length}</Typography>
                     <IconButton onClick={(event) => {
                         handleDislikeList(event, listInfo._id)
-                    }} aria-label='dislike'>
+                    }} aria-label='dislike' disabled={auth.user ? auth.user.username === ' ' || auth.user.username === listInfo.owner : false } >
                         {auth.user ? listInfo.dislikes.includes(auth.user.username) ? 
                         <ThumbDownIcon style={{ fontSize: '24pt' }} /> 
                         : <ThumbDownOffAltIcon style={{ fontSize: '24pt' }} /> : <ThumbDownOffAltIcon style={{ fontSize: '24pt' }} />}
