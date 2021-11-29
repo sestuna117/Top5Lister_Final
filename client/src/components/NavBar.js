@@ -1,7 +1,8 @@
 import { useContext, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import AuthContext from '../auth';
-import { Button, Fab, Typography } from '@mui/material'
+import { Button, Typography } from '@mui/material'
+import { useLocation } from "react-router-dom";
 import HomeIcon from '@mui/icons-material/Home';
 import GroupIcon from '@mui/icons-material/Group';
 import PersonIcon from '@mui/icons-material/Person';
@@ -50,8 +51,9 @@ function NavBar() {
     }
 
     // Response for when one presses a list page icon
-    const handleChangePage = (event) => {
-
+    const handleChangePage = (event, path) => {
+        event.preventDefault();
+        store.changePage(path);
     }
 
     function getSortMenu() {
@@ -86,22 +88,23 @@ function NavBar() {
     return (
         <div className='navbar'>
             <div className='navbar-left'>
-                <IconButton onClick={handleChangePage} disabled={store.isListNameEditActive} aria-label='edit'>
+                <IconButton onClick={(event) => {handleChangePage(event, '/')}} disabled={store.currentList || !auth.user} aria-label='edit'>
                     <HomeIcon style={{ fontSize: '36pt' }} />
                 </IconButton>
-                <IconButton onClick={handleChangePage} disabled={store.isListNameEditActive} aria-label='edit'>
+                <IconButton onClick={(event) => {handleChangePage(event, '/all')}} disabled={store.currentList} aria-label='edit'>
                     <GroupIcon style={{ fontSize: '36pt' }} />
                 </IconButton>
-                <IconButton onClick={handleChangePage} disabled={store.isListNameEditActive} aria-label='edit'>
+                <IconButton onClick={(event) => {handleChangePage(event, '/user')}} disabled={store.currentList} aria-label='edit'>
                     <PersonIcon style={{ fontSize: '36pt' }} />
                 </IconButton>
-                <IconButton onClick={handleChangePage} disabled={store.isListNameEditActive} aria-label='edit'>
+                <IconButton onClick={(event) => {handleChangePage(event, '/community')}} disabled={store.currentList} aria-label='edit'>
                     <FunctionsIcon style={{ fontSize: '36pt' }} />
                 </IconButton>
                 <TextField
                     required
                     onChange={handleChange}
                     placeholder={"Search"}
+                    disabled={store.currentList}
                     style={{ width: 400 }}
                     name="name"
                     className='list-card'
@@ -118,6 +121,7 @@ function NavBar() {
                 </Typography>
                 <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                     <IconButton
+                        disabled={store.currentList}
                         onClick={handleSortMenuOpen}
                         color="inherit"
                     >

@@ -211,6 +211,10 @@ body {
   pointer-events: none;
 }
 
+.disabled-link {
+  pointer-events: none;
+}
+
 .unselected-list-card:hover {
   cursor: pointer;
   background-color: var(--swatch-contrast);

@@ -30,7 +30,7 @@ function Statusbar() {
                 aria-label="add"
                 id="add-list-button"
                 onClick={handleCreateNewList}
-                disabled={store.isListNameEditActive}
+                disabled={store.currentList}
             >
                 <AddIcon  style={{ fontSize: '24pt', color: 'black' }} />
             </IconButton>

@@ -1,16 +1,19 @@
 import './App.css';
-import { React } from 'react'
+import { React, useContext, useEffect } from 'react'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
-import { AuthContextProvider } from './auth';
-import { GlobalStoreContextProvider } from './store'
 import {
     AppBanner,
     HomeWrapper,
     RegisterScreen,
     Statusbar,
     WorkspaceScreen,
-    LoginScreen
+    LoginScreen,
+    AllListPage,
+    UserListPage,
+    CommunityListPage
 } from './components'
+import GlobalStoreContext from './store';
+import AuthContext from './auth';
 /*
     This is our application's top-level component.
     
@@ -23,21 +26,30 @@ import {
   @author McKilla Gorilla
 */
 const App = () => {
+    const { store } = useContext(GlobalStoreContext);
+    const { auth } = useContext(AuthContext)
+
+    useEffect(() => {
+        if (store.listInfo === 0) {
+            return;
+        }
+        store.loadListInfo();
+    }, [auth]);
+
     return (
-        <BrowserRouter>
-            <AuthContextProvider>
-                <GlobalStoreContextProvider>              
-                    <AppBanner />
-                    <Switch>
-                        <Route path="/" exact component={HomeWrapper} />
-                        <Route path="/login/" exact component={LoginScreen} />
-                        <Route path="/register/" exact component={RegisterScreen} />
-                        <Route path="/top5list/:id" exact component={WorkspaceScreen} />
-                    </Switch>
-                    <Statusbar />
-                </GlobalStoreContextProvider>
-            </AuthContextProvider>
-        </BrowserRouter>
+        <div>
+            <AppBanner />
+            <Switch>
+                <Route path="/" exact component={HomeWrapper} />
+                <Route path="/all" exact component={AllListPage} />
+                <Route path="/user" exact component={UserListPage} />
+                <Route path="/community" exact component={CommunityListPage} />
+                <Route path="/login/" exact component={LoginScreen} />
+                <Route path="/register/" exact component={RegisterScreen} />
+                <Route path="/top5list/:id" exact component={WorkspaceScreen} />
+            </Switch>
+            <Statusbar />
+        </div>
     )
 }
 

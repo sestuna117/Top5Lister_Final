@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import api from '../api'
 import AuthContext from '../auth'
@@ -42,7 +42,6 @@ function GlobalStoreContextProvider(props) {
         filter: ""
     });
     const history = useHistory();
-    // console.log(store);
 
     // SINCE WE'VE WRAPPED THE STORE IN THE AUTH CONTEXT WE CAN ACCESS THE USER HERE
     const { auth } = useContext(AuthContext);
@@ -204,7 +203,7 @@ function GlobalStoreContextProvider(props) {
                     async function getListPairs() {
                         response = await api.getTop5ListPairs();
                         if (response.data.success) {
-                            let pairsArray = response.data.listInfo.filter(pair => pair.owner === auth.user.username);
+                            let pairsArray = response.data.listInfo;
                             storeReducer({
                                 type: GlobalStoreActionType.UPDATE_LIST,
                                 payload: {
@@ -224,6 +223,9 @@ function GlobalStoreContextProvider(props) {
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
             let top5List = response.data.top5List;
+            console.log(top5List.likes);
+            console.log(auth.user.username);
+            console.log(top5List.likes.includes(auth.user.username));
             if (top5List.likes.includes(auth.user.username)) {
                 top5List.dislikes = top5List.dislikes.filter(i => i !== auth.user.username)
                 top5List.likes = top5List.likes.filter(i => i !== auth.user.username)
@@ -231,11 +233,14 @@ function GlobalStoreContextProvider(props) {
             else {
                 top5List.dislikes = top5List.dislikes.filter(i => i !== auth.user.username)
                 top5List.likes = top5List.likes.filter(i => i !== auth.user.username)
+                console.log(top5List.likes);
                 if (top5List.likes.length === 0) {
                     top5List.likes = [auth.user.username]
                 }
                 else {
-                    top5List.likes = top5List.likes.push(auth.user.username);
+                    let likes = top5List.likes;
+                    likes.push(auth.user.username);
+                    top5List.likes = likes;
                 }
             }
             async function updateList(top5List) {
@@ -244,8 +249,7 @@ function GlobalStoreContextProvider(props) {
                     async function getListPairs() {
                         response = await api.getTop5ListPairs();
                         if (response.data.success) {
-                            let pairsArray = response.data.listInfo.filter(pair => pair.owner === auth.user.username);
-                            console.log(pairsArray);
+                            let pairsArray = response.data.listInfo;
                             storeReducer({
                                 type: GlobalStoreActionType.UPDATE_LIST,
                                 payload: {
@@ -276,7 +280,9 @@ function GlobalStoreContextProvider(props) {
                     top5List.dislikes = [auth.user.username]
                 }
                 else {
-                    top5List.dislikes = top5List.dislikes.push(auth.user.username);
+                    let dislikes = top5List.dislikes;
+                    dislikes.push(auth.user.username);
+                    top5List.dislikes = dislikes;
                 }
             }
             async function updateList(top5List) {
@@ -318,7 +324,7 @@ function GlobalStoreContextProvider(props) {
                     async function getListPairs() {
                         response = await api.getTop5ListPairs();
                         if (response.data.success) {
-                            let pairsArray = response.data.listInfo.filter(pair => pair.owner === auth.user.username);
+                            let pairsArray = response.data.listInfo;
                             console.log(pairsArray);
                             storeReducer({
                                 type: GlobalStoreActionType.UPDATE_LIST,
@@ -333,6 +339,10 @@ function GlobalStoreContextProvider(props) {
             }
             updateList(top5List);
         }
+    }
+
+    store.changePage = function (path) {
+        history.push(path)
     }
 
     store.setFilter = function (filterStr) {

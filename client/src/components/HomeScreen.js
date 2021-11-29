@@ -25,13 +25,6 @@ const HomeScreen = () => {
         setLists(ownedLists);
     }, [store])
 
-    useEffect(() => {
-        if (!auth.loggedIn || store.listInfo === 0) {
-            return;
-        }
-        store.loadListInfo();
-    }, [auth]);
-
     return (
         <div id="top5-list-selector">
             <NavBar />

@@ -92,7 +92,7 @@ export default function AppBanner() {
                         sx={{ display: { xs: 'none', sm: 'block'} }}
                     >
                         <Link
-                            className={store.isItemEditActive || store.isListNameEditActive ? 'disabled-link' : ''}
+                            className={store.currentList ? 'disabled-link' : ''}
                             style={{ textDecoration: 'none', color: '#c4b569' }}
                             to='/'>
                             T<sup>5</sup>L
@@ -112,7 +112,7 @@ export default function AppBanner() {
                         >
                             {getAccountMenu(auth.loggedIn)}
                         </IconButton> : <Button
-                            disabled={store.isItemEditActive || store.isListNameEditActive}
+                            disabled={store.currentList}
                             variant="h5"
                             type="submit"
                             sx={{ fontSize: 20, border: '2px solid', borderRadius: 100, color: 'black', backgroundColor: '#a959d0' }}

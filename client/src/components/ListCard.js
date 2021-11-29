@@ -14,6 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Button, Typography } from '@mui/material';
 import AuthContext from '../auth';
 import ExpandedContent from './ExpandedContent';
+import { useLocation } from 'react-router';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -27,6 +28,7 @@ function ListCard(props) {
     const { auth } = useContext(AuthContext)
     const [listOpened, setListOpened] = useState(false);
     const { listInfo } = props;
+    let location = useLocation();
 
     function handleEditList(event, id) {
         if (!event.target.disabled) {
@@ -81,27 +83,27 @@ function ListCard(props) {
                     <Typography sx={{fontSize: 14}}>By: {<span>{listInfo.owner}</span>}</Typography>
                 </Box>
                 <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
-                    <IconButton className={listInfo.likes.includes(auth.user.username) ? 'is-on' : null} onClick={(event) => {
+                    <IconButton className={auth.user ? listInfo.likes.includes(auth.user.username) ? 'is-on' : null : null} onClick={(event) => {
                         handleLikeList(event, listInfo._id)
-                    }} disabled={store.isListNameEditActive} aria-label='like'>
-                        {listInfo.likes.includes(auth.user.username) ? 
+                    }} aria-label='like'>
+                        {auth.user ? listInfo.likes.includes(auth.user.username) ? 
                         <ThumbUpIcon style={{ fontSize: '24pt' }} /> 
-                        : <ThumbUpOffAltIcon style={{ fontSize: '24pt' }} />}
+                        : <ThumbUpOffAltIcon style={{ fontSize: '24pt' }} /> : <ThumbUpOffAltIcon style={{ fontSize: '24pt' }} />}
                     </IconButton>
                     <Typography>{listInfo.likes.length}</Typography>
                     <IconButton onClick={(event) => {
                         handleDislikeList(event, listInfo._id)
-                    }} disabled={store.isListNameEditActive} aria-label='dislike'>
-                        {listInfo.dislikes.includes(auth.user.username) ? 
+                    }} aria-label='dislike'>
+                        {auth.user ? listInfo.dislikes.includes(auth.user.username) ? 
                         <ThumbDownIcon style={{ fontSize: '24pt' }} /> 
-                        : <ThumbDownOffAltIcon style={{ fontSize: '24pt' }} />}
+                        : <ThumbDownOffAltIcon style={{ fontSize: '24pt' }} /> : <ThumbDownOffAltIcon style={{ fontSize: '24pt' }} />}
                     </IconButton>
                     <Typography>{listInfo.dislikes.length}</Typography>
-                    <IconButton onClick={(event) => {
+                    {auth.user.username === listInfo.owner && location.pathname === '/' ? <IconButton onClick={(event) => {
                         handleDeleteList(event, listInfo)
-                    }} disabled={store.isListNameEditActive} aria-label='delete'>
+                    }} aria-label='delete'>
                         <DeleteIcon style={{ fontSize: '24pt' }} />
-                    </IconButton>
+                    </IconButton> : null}
                 </Box>
             </div>
             {listOpened ? <ExpandedContent listInfo={listInfo} /> : null}
@@ -112,7 +114,7 @@ function ListCard(props) {
                         : <Button sx={{ padding: '0', color: 'red', textDecoration: 'underline' ,
                         ':hover': { bgcolor: 'transparent', color: 'red', boxShadow: 'none', textDecoration: 'underline', fontWeight: 'bold' }}} 
                         onClick={(event) => { handleEditList(event, listInfo._id) }} 
-                        disabled={store.isListNameEditActive} aria-label='edit'>
+                        aria-label='edit'>
                             Edit
                         </Button>}
                 </Box>
