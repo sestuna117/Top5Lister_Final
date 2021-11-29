@@ -3,14 +3,8 @@ import { GlobalStoreContext } from '../store'
 import Button from '@mui/material/Button';
 import { Typography } from '@mui/material';
 
-/*
-    This toolbar is a functional React component that
-    manages the undo/redo/close buttons.
-    
-    @author McKilla Gorilla
-*/
 function EditToolbar(props) {
-    const { selectButton } = props
+    const { handleSave, handlePublish, publishable } = props
     const { store } = useContext(GlobalStoreContext);
 
     let editStatus = false;
@@ -20,10 +14,9 @@ function EditToolbar(props) {
     return (
         <div id="edit-toolbar">
             <Button
-                onClick={() => { selectButton(1) }}
+                onClick={(event) => {handleSave(event)}}
                 type="submit"
                 id='save-button'
-                // onClick={null}
                 variant="contained"
                 sx={{
                     backgroundColor: '#dddddd', color: 'black', boxShadow: 'none', border: '1px black solid', marginRight: '10px',
@@ -35,11 +28,10 @@ function EditToolbar(props) {
                 </Typography>
             </Button>
             <Button
-                onClick={() => { selectButton(2) }}
-                type="submit"
-                // disabled={editStatus}
+                disabled={!publishable}
+                onClick={(event) => {handlePublish(event)}}
+                type="button"
                 id='publish-button'
-                // onClick={!editStatus ? handleClose : null}
                 variant="contained"
                 sx={{
                     backgroundColor: '#dddddd', color: 'black', boxShadow: 'none', border: '1px black solid', marginRight: '20px',

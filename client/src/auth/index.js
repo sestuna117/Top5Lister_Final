@@ -25,6 +25,7 @@ function AuthContextProvider(props) {
     // console.log(auth)
 
     useEffect(() => {
+        createGuestAcc();
         getLoggedIn();
     }, []);
 
@@ -77,6 +78,36 @@ function AuthContextProvider(props) {
                 return auth;
         }
     }, [setAuth]);
+
+    const createGuestAcc = async () => {
+        let guestData = {
+            firstName: ' ',
+            lastName: ' ',
+            username: ' ',
+            email: ' ',
+            password: ' ',
+        }
+        const response = await api.createGuest(guestData);
+
+    };
+
+    const loginGuestAcc = useCallback(async (store) => {
+        let guestLogin = {
+            email: ' ',
+            password: ' '
+        };
+        const response = await api.loginGuest(guestLogin);
+        if (response.status === 200) {
+            authReducer({
+                type: AuthActionType.LOGIN_USER,
+                payload: {
+                    user: response.data.user
+                }
+            })
+            history.push("/community");
+            store.loadListInfo();
+        }
+    }, [authReducer]);
 
     const getLoggedIn = useCallback(async () => {
         try {
@@ -154,8 +185,8 @@ function AuthContextProvider(props) {
                 type: AuthActionType.LOGOUT_USER,
                 payload: {}
             })
-            store.closeTop5List();
             history.push("/")
+            store.closeTop5List();
         }
     }, [authReducer])
 
@@ -168,7 +199,7 @@ function AuthContextProvider(props) {
 
     return (
         <AuthContext.Provider value={{
-            auth, registerUser, loginUser, getLoggedIn, logoutUser, closeErrorMsg
+            auth, registerUser, loginUser, getLoggedIn, logoutUser, closeErrorMsg, loginGuestAcc
         }}>
             {props.children}
         </AuthContext.Provider>

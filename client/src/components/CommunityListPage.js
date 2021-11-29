@@ -3,15 +3,15 @@ import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import List from '@mui/material/List';
 import AuthContext from '../auth';
-import DeleteModal from './DeleteModal'
 import NavBar from './NavBar';
+import UnauthModal from './UnauthModal.js'
 
 /*
     This React component lists all the top5 lists in the UI.
     
     @author McKilla Gorilla
 */
-const HomeScreen = () => {
+const CommunityListPage = () => {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext)
     const [lists, setLists] = useState([])
@@ -24,12 +24,11 @@ const HomeScreen = () => {
         if (!store) {
             return;
         }
-        let ownedLists = store.listInfo.filter(pair => pair.owner === auth.user.username)
-            .filter(list => list.name.includes(store.filter)).slice();
-        setLists(ownedLists);
+        let searchedLists = store.listInfo.filter(list => list.name.includes(store.filter)).slice();
+        setLists(searchedLists);
     }, [store])
 
-    return (
+    return (auth.user ?
         <div id="top5-list-selector">
             <NavBar />
             <div id="list-selector-list">
@@ -43,10 +42,9 @@ const HomeScreen = () => {
                             />
                         ))
                     }
-                    <DeleteModal />
                 </List>
             </div>
-        </div>)
+        </div> : <UnauthModal />)
 }
 
-export default HomeScreen;
+export default CommunityListPage;

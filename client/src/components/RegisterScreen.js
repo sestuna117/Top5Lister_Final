@@ -22,12 +22,12 @@ export default function RegisterScreen() {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
         registerUser({
-            firstName: formData.get('firstName'),
-            lastName: formData.get('lastName'),
-            username: formData.get('username'),
-            email: formData.get('email'),
-            password: formData.get('password'),
-            passwordVerify: formData.get('passwordVerify')
+            firstName: formData.get('firstName').trim(),
+            lastName: formData.get('lastName').trim(),
+            username: formData.get('username').trim(),
+            email: formData.get('email').trim(),
+            password: formData.get('password').trim(),
+            passwordVerify: formData.get('passwordVerify').trim()
         }, store);
     };
 

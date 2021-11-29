@@ -115,6 +115,7 @@ body {
 }
 
 #top5-list-selector {
+  background-color: #c4c4c4;
   position: absolute;
   left: 0%;
   top: 8%;
@@ -207,6 +208,10 @@ body {
   border: 1px solid #999999;
   background-color: #cccccc;
   color: #666666;
+  pointer-events: none;
+}
+
+.disabled-link {
   pointer-events: none;
 }
 

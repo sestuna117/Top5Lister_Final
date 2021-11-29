@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import App from './App';
 //import { AuthContextProvider } from './auth';
 import reportWebVitals from './reportWebVitals';
+import { AuthContextProvider } from './auth';
+import { GlobalStoreContextProvider } from './store'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 /*
   This is the entry-point for our application. Notice that we
   inject our store into all the components in our application.
@@ -19,8 +22,14 @@ const AppWrapper = () => {
   )
 }*/
 ReactDOM.render(
-  <React.StrictMode>  
-      <App />
+  <React.StrictMode>
+    <BrowserRouter>
+      <AuthContextProvider>
+        <GlobalStoreContextProvider>
+          <App />
+        </GlobalStoreContextProvider>
+      </AuthContextProvider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

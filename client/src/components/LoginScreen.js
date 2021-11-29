@@ -41,8 +41,8 @@ export default function SignIn() {
     const data = new FormData(event.currentTarget);
     // eslint-disable-next-line no-console
     loginUser({
-      email: data.get('email'),
-      password: data.get('password')
+      email: data.get('email').trim(),
+      password: data.get('password').trim()
     }, store);
   };
 
