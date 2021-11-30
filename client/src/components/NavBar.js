@@ -45,7 +45,8 @@ function NavBar() {
         setAnchorEl(null);
     };
 
-    const handleSort = () => {
+    const handleSort = (sort) => {
+        store.setSorter(sort)
         handleMenuClose();
     }
 
@@ -76,18 +77,18 @@ function NavBar() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={handleMenuClose}><Button>Publish Date (Newest)</Button></MenuItem>
-            <MenuItem onClick={handleMenuClose}><Button>Publish Date (Oldest)</Button></MenuItem>
-            <MenuItem onClick={handleMenuClose}><Button>Views</Button></MenuItem>
-            <MenuItem onClick={handleMenuClose}><Button>Likes</Button></MenuItem>
-            <MenuItem onClick={handleMenuClose}><Button>Dislikes</Button></MenuItem>
+            <MenuItem onClick={() => {handleSort(1)}}><Button>Publish Date (Newest)</Button></MenuItem>
+            <MenuItem onClick={() => {handleSort(2)}}><Button>Publish Date (Oldest)</Button></MenuItem>
+            <MenuItem onClick={() => {handleSort(3)}}><Button>Views</Button></MenuItem>
+            <MenuItem onClick={() => {handleSort(4)}}><Button>Likes</Button></MenuItem>
+            <MenuItem onClick={() => {handleSort(5)}}><Button>Dislikes</Button></MenuItem>
         </Menu>
     );
 
     return (
         <div className='navbar'>
             <div className='navbar-left'>
-                <IconButton onClick={(event) => {handleChangePage(event, '/')}} disabled={store.currentList || auth.user.username === ' '} aria-label='edit'>
+                <IconButton onClick={(event) => {handleChangePage(event, '/')}} disabled={store.currentList || !auth.user} aria-label='edit'>
                     <HomeIcon style={{ fontSize: '36pt' }} />
                 </IconButton>
                 <IconButton onClick={(event) => {handleChangePage(event, '/all')}} disabled={store.currentList} aria-label='edit'>

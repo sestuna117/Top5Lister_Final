@@ -24,8 +24,26 @@ const HomeScreen = () => {
         if (!store) {
             return;
         }
+        console.log(store.sorter)
         let ownedLists = store.listInfo.filter(pair => pair.owner === auth.user.username)
             .filter(list => list.name.includes(store.filter)).slice();
+        switch (store.sorter) {
+            case 1:
+                ownedLists.sort((a, b) => Date.parse(b.published) - Date.parse(a.published))
+                break;
+            case 2:
+                ownedLists.sort((a, b) => Date.parse(a.published) - Date.parse(b.published))
+                break;
+            case 3:
+                ownedLists.sort((a, b) => b.views - a.views)
+                break;
+            case 4:
+                ownedLists.sort((a, b) => b.likes.length - a.likes.length)
+                break;
+            case 5:
+                ownedLists.sort((a, b) => b.dislikes.length - a.dislikes.length)
+                break;
+        }
         setLists(ownedLists);
     }, [store])
 
