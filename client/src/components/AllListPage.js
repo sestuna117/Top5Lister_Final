@@ -20,12 +20,29 @@ const AllListPage = () => {
         if (!store) {
             return;
         }
-        let searchedLists = store.listInfo.filter(list => list.published !== 'false')
+        let searchedLists = store.listInfo.filter(list => list.published !== '1970-01-01')
             .filter(list => list.name.includes(store.filter)).slice();
+        switch (store.sorter) {
+            case 1:
+                searchedLists.sort((a, b) => Date.parse(b.published) - Date.parse(a.published))
+                break;
+            case 2:
+                searchedLists.sort((a, b) => Date.parse(a.published) - Date.parse(b.published))
+                break;
+            case 3:
+                searchedLists.sort((a, b) => b.views - a.views)
+                break;
+            case 4:
+                searchedLists.sort((a, b) => b.likes.length - a.likes.length)
+                break;
+            case 5:
+                searchedLists.sort((a, b) => b.dislikes.length - a.dislikes.length)
+                break;
+        }
         setLists(searchedLists);
     }, [store])
 
-    return ( auth.user ?
+    return (auth.user ?
         <div id="top5-list-selector">
             <NavBar />
             <div id="list-selector-list">
