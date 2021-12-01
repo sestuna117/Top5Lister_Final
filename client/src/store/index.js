@@ -27,7 +27,8 @@ export const GlobalStoreActionType = {
     CLOSE_TOP5LIST: "CLOSE_TOP5LIST",
     SET_FILTER: "SET_FILTER",
     SET_SORTER: "SET_SORTER",
-    CHANGE_PAGE: "CHANGE_PAGE"
+    CHANGE_PAGE: "CHANGE_PAGE",
+    UPDATE_AGG_LIST: "UPDATE_AGG_LIST",
 }
 
 // WITH THIS WE'RE MAKING OUR GLOBAL DATA STORE
@@ -36,6 +37,7 @@ function GlobalStoreContextProvider(props) {
     // THESE ARE ALL THE THINGS OUR DATA STORE WILL MANAGE
     const [store, setStore] = useState({
         listInfo: [],
+        aggListInfo: [],
         currentList: null,
         newListCounter: 0,
         isListNameEditActive: false,
@@ -58,6 +60,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.UPDATE_LIST: {
                 return setStore({
                     listInfo: payload.listInfo,
+                    aggListInfo: store.aggListInfo,
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
@@ -71,6 +74,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.CLOSE_CURRENT_LIST: {
                 return setStore({
                     listInfo: store.listInfo,
+                    aggListInfo: store.aggListInfo,
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
@@ -84,6 +88,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.CREATE_NEW_LIST: {
                 return setStore({
                     listInfo: store.listInfo,
+                    aggListInfo: store.aggListInfo,
                     currentList: payload,
                     newListCounter: store.newListCounter + 1,
                     isListNameEditActive: false,
@@ -96,8 +101,9 @@ function GlobalStoreContextProvider(props) {
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
             case GlobalStoreActionType.LOAD_ID_NAME_PAIRS: {
                 return setStore({
-                    listInfo: payload,
-                    currentList: store.currentList,
+                    listInfo: payload.listInfo,
+                    aggListInfo: payload.aggListInfo,
+                    currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
@@ -110,6 +116,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.MARK_LIST_FOR_DELETION: {
                 return setStore({
                     listInfo: store.listInfo,
+                    aggListInfo: store.aggListInfo,
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
@@ -123,6 +130,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.UNMARK_LIST_FOR_DELETION: {
                 return setStore({
                     listInfo: store.listInfo,
+                    aggListInfo: store.aggListInfo,
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
@@ -136,6 +144,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.SET_CURRENT_LIST: {
                 return setStore({
                     listInfo: store.listInfo,
+                    aggListInfo: store.aggListInfo,
                     currentList: payload,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
@@ -149,6 +158,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.SET_ITEM_EDIT_ACTIVE: {
                 return setStore({
                     listInfo: store.listInfo,
+                    aggListInfo: store.aggListInfo,
                     currentList: store.currentList,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
@@ -162,6 +172,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.SET_LIST_NAME_EDIT_ACTIVE: {
                 return setStore({
                     listInfo: store.listInfo,
+                    aggListInfo: store.aggListInfo,
                     currentList: payload,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: true,
@@ -174,6 +185,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.CLOSE_TOP5LIST: {
                 return setStore({
                     listInfo: [],
+                    aggListInfo: store.aggListInfo,
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
@@ -186,6 +198,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.SET_FILTER: {
                 return setStore({
                     listInfo: store.listInfo,
+                    aggListInfo: store.aggListInfo,
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
@@ -198,6 +211,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.SET_SORTER: {
                 return setStore({
                     listInfo: store.listInfo,
+                    aggListInfo: store.aggListInfo,
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
@@ -210,6 +224,7 @@ function GlobalStoreContextProvider(props) {
             case GlobalStoreActionType.CHANGE_PAGE: {
                 return setStore({
                     listInfo: store.listInfo,
+                    aggListInfo: store.aggListInfo,
                     currentList: null,
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
@@ -217,6 +232,20 @@ function GlobalStoreContextProvider(props) {
                     listMarkedForDeletion: null,
                     filter: "",
                     sorter: 1,
+                });
+            }
+            // LIST UPDATE OF ITS NAME
+            case GlobalStoreActionType.UPDATE_AGG_LIST: {
+                return setStore({
+                    listInfo: store.listInfo,
+                    aggListInfo: payload.aggListInfo,
+                    currentList: null,
+                    newListCounter: store.newListCounter,
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null,
+                    filter: store.filter,
+                    sorter: store.sorter,
                 });
             }
             default:
@@ -228,7 +257,6 @@ function GlobalStoreContextProvider(props) {
     // DRIVE THE STATE OF THE APPLICATION. WE'LL CALL THESE IN 
     // RESPONSE TO EVENTS INSIDE OUR COMPONENTS.
 
-    // THIS FUNCTION PROCESSES CHANGING A LIST NAME
     store.viewList = async function (id) {
         let response = await api.getTop5ListById(id);
         if (response.data.success) {
@@ -372,6 +400,157 @@ function GlobalStoreContextProvider(props) {
         }
     }
 
+    store.viewAggList = async function (id) {
+        let response = await api.getAggregatedTop5ListById(id);
+        if (response.data.success) {
+            let top5List = response.data.aggregatedTop5List;
+            top5List.views++;
+            let time = new Date().toISOString().slice(0, 10)
+            top5List.updated = time;
+            async function updateAggregatedList(top5List) {
+                response = await api.updateAggregatedTop5ListById(top5List._id, top5List);
+                if (response.data.success) {
+                    async function getAggregatedListPairs() {
+                        response = await api.getAggregatedTop5ListPairs();
+                        if (response.data.success) {
+                            let pairsArray = response.data.listInfo;
+                            storeReducer({
+                                type: GlobalStoreActionType.UPDATE_AGG_LIST,
+                                payload: {
+                                    aggListInfo: pairsArray,
+                                }
+                            });
+                        }
+                    }
+                    getAggregatedListPairs(top5List);
+                }
+            }
+            updateAggregatedList(top5List);
+        }
+    }
+
+    store.likeAggList = async function (id) {
+        let response = await api.getAggregatedTop5ListById(id);
+        if (response.data.success) {
+            let top5List = response.data.aggregatedTop5List;
+            if (top5List.likes.includes(auth.user.username)) {
+                top5List.dislikes = top5List.dislikes.filter(i => i !== auth.user.username)
+                top5List.likes = top5List.likes.filter(i => i !== auth.user.username)
+            }
+            else {
+                top5List.dislikes = top5List.dislikes.filter(i => i !== auth.user.username)
+                top5List.likes = top5List.likes.filter(i => i !== auth.user.username)
+                if (top5List.likes.length === 0) {
+                    top5List.likes = [auth.user.username]
+                }
+                else {
+                    let likes = top5List.likes;
+                    likes.push(auth.user.username);
+                    top5List.likes = likes;
+                }
+            }
+            let time = new Date().toISOString().slice(0, 10)
+            top5List.updated = time;
+            async function updateAggregatedList(top5List) {
+                response = await api.updateAggregatedTop5ListById(top5List._id, top5List);
+                if (response.data.success) {
+                    async function getListPairs() {
+                        response = await api.getAggregatedTop5ListPairs();
+                        if (response.data.success) {
+                            let pairsArray = response.data.listInfo;
+                            storeReducer({
+                                type: GlobalStoreActionType.UPDATE_AGG_LIST,
+                                payload: {
+                                    aggListInfo: pairsArray,
+                                }
+                            });
+                        }
+                    }
+                    getListPairs();
+                }
+            }
+            updateAggregatedList(top5List);
+        }
+    }
+
+    store.dislikeAggList = async function (id) {
+        let response = await api.getAggregatedTop5ListById(id);
+        if (response.data.success) {
+            let top5List = response.data.aggregatedTop5List;
+            if (top5List.dislikes.includes(auth.user.username)) {
+                top5List.dislikes = top5List.dislikes.filter(i => i !== auth.user.username)
+                top5List.likes = top5List.likes.filter(i => i !== auth.user.username)
+            }
+            else {
+                top5List.dislikes = top5List.dislikes.filter(i => i !== auth.user.username)
+                top5List.likes = top5List.likes.filter(i => i !== auth.user.username)
+                if (top5List.dislikes.length === 0) {
+                    top5List.dislikes = [auth.user.username]
+                }
+                else {
+                    let dislikes = top5List.dislikes;
+                    dislikes.push(auth.user.username);
+                    top5List.dislikes = dislikes;
+                }
+            }
+            let time = new Date().toISOString().slice(0, 10)
+            top5List.updated = time;
+            async function updateAggregatedList(top5List) {
+                response = await api.updateAggregatedTop5ListById(top5List._id, top5List);
+                if (response.data.success) {
+                    async function getListPairs() {
+                        response = await api.getAggregatedTop5ListPairs();
+                        if (response.data.success) {
+                            let pairsArray = response.data.listInfo;
+                            storeReducer({
+                                type: GlobalStoreActionType.UPDATE_AGG_LIST,
+                                payload: {
+                                    aggListInfo: pairsArray,
+                                }
+                            });
+                        }
+                    }
+                    getListPairs();
+                }
+            }
+            updateAggregatedList(top5List);
+        }
+    }
+
+    store.addAggComment = async function (id, comment) {
+        let response = await api.getAggregatedTop5ListById(id);
+        if (response.data.success) {
+            let top5List = response.data.aggregatedTop5List;
+            if (top5List.comments.length === 0) {
+                top5List.comments = [[auth.user.username, comment]]
+            }
+            else {
+                top5List.comments.unshift([auth.user.username, comment]);
+            }
+            let time = new Date().toISOString().slice(0, 10)
+            top5List.updated = time;
+            async function updateAggregatedList(top5List) {
+                response = await api.updateAggregatedTop5ListById(top5List._id, top5List);
+                if (response.data.success) {
+                    async function getListPairs() {
+                        response = await api.getAggregatedTop5ListPairs();
+                        if (response.data.success) {
+                            let pairsArray = response.data.listInfo;
+                            storeReducer({
+                                type: GlobalStoreActionType.UPDATE_AGG_LIST,
+                                payload: {
+                                    aggListInfo: pairsArray,
+                                }
+                            });
+                        }
+                    }
+                    getListPairs();
+                }
+            }
+            updateAggregatedList(top5List);
+        }
+    }
+
     store.changePage = function (path) {
         history.push(path)
         storeReducer({
@@ -454,14 +633,17 @@ function GlobalStoreContextProvider(props) {
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadListInfo = async function () {
         try {
-            const response = await api.getTop5ListPairs();
+            let response = await api.getTop5ListPairs();
             if (response.data.success) {
                 let pairsArray = response.data.listInfo;
-
-                storeReducer({
-                    type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
-                    payload: pairsArray
-                });
+                response = await api.getAggregatedTop5ListPairs();
+                if (response.data.success) {
+                    let aggPairsArray = response.data.listInfo;
+                    storeReducer({
+                        type: GlobalStoreActionType.LOAD_ID_NAME_PAIRS,
+                        payload: { listInfo: pairsArray, aggListInfo: aggPairsArray }
+                    });
+                }
             }
         }
         catch {
@@ -491,6 +673,49 @@ function GlobalStoreContextProvider(props) {
 
     store.deleteList = async function (listToDelete) {
         let response = await api.deleteTop5ListById(listToDelete._id);
+
+        let items = [];
+        listToDelete.items.forEach((item, index) => {
+            items.push({ name: item, points: 5 - index })
+        })
+        console.log(items)
+        async function removeFromAggList(name, items) {
+            let existingAggList = store.aggListInfo.findIndex(list => list.name === name);
+            console.log(existingAggList);
+            if (existingAggList >= 0) {
+                let aggList = store.aggListInfo[existingAggList];
+                let aggListItems = aggList.items;
+                items.forEach(newItem => {
+                    let existingItem = aggListItems.findIndex(oldItem => oldItem.name === newItem.name)
+                    console.log('item name:' + newItem.name)
+                    console.log(existingItem);
+                    if (existingItem >= 0) {
+                        aggListItems[existingItem].points -= newItem.points;
+                        if (aggListItems[existingItem].points <= 0) {
+                            aggListItems.splice(existingItem, 1)
+                        }
+                    }
+                })
+                console.log(aggListItems);
+                if (aggListItems.length === 0) {
+                    response = await api.deleteAggregatedTop5ListById(aggList._id);
+                }
+                else {
+                    aggList.items = aggListItems;
+                    let time = new Date().toISOString().slice(0, 10)
+                    aggList.updated = time;
+                    response = await api.updateAggregatedTop5ListById(aggList._id, aggList)
+                }
+                if (response.data.success) {
+                    console.log("API UPDATED AGGREGATED LIST");
+                }
+                else {
+                    console.log("API FAILED TO UPDATE AGGREGATED LIST");
+                }
+            }
+        }
+        removeFromAggList(listToDelete.name, items);
+
         if (response.data.success) {
             store.loadListInfo();
             history.push("/");
@@ -542,6 +767,59 @@ function GlobalStoreContextProvider(props) {
         store.currentList.items = newItems;
         store.currentList.name = newName;
         store.currentList.published = new Date().toISOString().slice(0, 10)
+
+        let items = [];
+        newItems.forEach((item, index) => {
+            items.push({ name: item, points: 5 - index })
+        })
+        async function addToAggList(newName, items) {
+            let existingAggList = store.aggListInfo.findIndex(list => list.name === newName);
+            console.log(existingAggList);
+            if (existingAggList >= 0) {
+                let aggList = store.aggListInfo[existingAggList];
+                let aggListItems = aggList.items;
+                items.forEach(newItem => {
+                    let existingItem = aggListItems.findIndex(oldItem => oldItem.name === newItem.name)
+                    console.log('item name:' + newItem.name)
+                    console.log(existingItem);
+                    if (existingItem >= 0) {
+                        aggListItems[existingItem].points += newItem.points;
+                    }
+                    else {
+                        aggListItems.push(newItem);
+                    }
+                })
+                console.log(aggListItems);
+                aggList.items = aggListItems;
+                const response = await api.updateAggregatedTop5ListById(aggList._id, aggList)
+                if (response.data.success) {
+                    console.log("API UPDATED AGGREGATED LIST");
+                }
+                else {
+                    console.log("API FAILED TO UPDATE AGGREGATED LIST");
+                }
+            }
+            else {
+                let time = new Date().toISOString().slice(0, 10)
+                let payload = {
+                    name: newName,
+                    items: items,
+                    comments: [],
+                    views: 0,
+                    likes: [],
+                    dislikes: [],
+                    updated: time
+                };
+                const response = await api.createAggregatedTop5List(payload);
+                if (response.data.success) {
+                    console.log("API CREATED A NEW AGGREGATED LIST");
+                }
+                else {
+                    console.log("API FAILED TO CREATE A NEW AGGREGATED LIST");
+                }
+            }
+        }
+        addToAggList(newName, items);
         store.updateCurrentList();
         store.closeCurrentList();
         store.loadListInfo();

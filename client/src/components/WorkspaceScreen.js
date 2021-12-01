@@ -38,11 +38,11 @@ function WorkspaceScreen() {
     },[store.currentList])
 
     useEffect(() => {
-        if (!texts.length === 6) {
+        if (!texts.length === 6 || !auth.user) {
             return;
         }
         checkPublishable();
-    },[texts])
+    },[texts, auth])
 
     function handleChange(event) {
         let newTexts = texts.slice();
@@ -53,6 +53,10 @@ function WorkspaceScreen() {
     const checkPublishable = () => {
         let index = 0;
         let publish = true;
+        if (store.listInfo.find(list => list.name === texts[0] && list.owner === auth.user.username && list.published !== '1970-01-01')) {
+            publish = false;
+        }
+
         while (index < 6 && publish) {
             if (!texts[index].charAt(0).match(/^[a-z0-9]+$/i)) {
                 publish = false;

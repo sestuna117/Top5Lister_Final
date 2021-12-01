@@ -7,7 +7,7 @@ function CommentsSection(props) {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const [text, setText] = useState('');
-    const { listInfo } = props;
+    const { listInfo, communityVer } = props;
 
     function handleChange(event) {
         setText(event.target.value)
@@ -18,13 +18,18 @@ function CommentsSection(props) {
             if (text === "") {
                 return;
             }
-            store.addComment(listInfo._id, text);
+            if (listInfo.updated) {
+                store.addAggComment(listInfo._id, text);
+            }
+            else {
+                store.addComment(listInfo._id, text);
+            }
             setText('');
         }
     }
 
     return (
-        <div className="comments-section">
+        <div className={communityVer ? "com-comments-section" : "comments-section"}>
             <div className='comments-list'>
                 {listInfo.comments.map((comment, index) => (
                     <div className='comment' key={index}>
@@ -38,7 +43,7 @@ function CommentsSection(props) {
                 placeholder="Add Comment"
                 value={text}
                 fullWidth
-                disabled={auth.user ? auth.user.username === ' ' : false } 
+                disabled={auth.user ? auth.user.username === ' ' : false}
                 sx={{ backgroundColor: 'white' }}
                 onChange={(event) => { handleChange(event) }}
                 onKeyPress={(event) => { handleKeyPress(event) }}

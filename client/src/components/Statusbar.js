@@ -27,7 +27,7 @@ function Statusbar() {
     return (location.pathname === '/community' ? (
         <div id="top5-statusbar">
             <Typography variant="h4">Community Lists</Typography>
-        </div>) : location.pathname === '/' ? (
+        </div>) : location.pathname === '/' && auth.user ? (
         <div id="list-selector-heading">
             <IconButton
                 sx={{backgroundColor: 'transparent'}}
