@@ -3,7 +3,7 @@ import { GlobalStoreContext } from '../store'
 import AuthContext from '../auth';
 import { Button, Typography } from '@mui/material'
 import HomeIcon from '@mui/icons-material/Home';
-import GroupIcon from '@mui/icons-material/Group';
+import GroupsIcon from '@mui/icons-material/Groups';
 import PersonIcon from '@mui/icons-material/Person';
 import FunctionsIcon from '@mui/icons-material/Functions';
 import SortIcon from '@mui/icons-material/Sort';
@@ -92,7 +92,7 @@ function NavBar() {
                     <HomeIcon style={{ fontSize: '36pt' }} />
                 </IconButton>
                 <IconButton onClick={(event) => {handleChangePage(event, '/all')}} disabled={store.currentList} aria-label='edit'>
-                    <GroupIcon style={{ fontSize: '36pt' }} />
+                    <GroupsIcon style={{ fontSize: '36pt' }} />
                 </IconButton>
                 <IconButton onClick={(event) => {handleChangePage(event, '/user')}} disabled={store.currentList} aria-label='edit'>
                     <PersonIcon style={{ fontSize: '36pt' }} />
