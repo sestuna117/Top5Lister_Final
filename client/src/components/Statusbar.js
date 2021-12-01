@@ -24,7 +24,7 @@ function Statusbar() {
         if (store.currentList.ownerEmail === auth.user.email) {
             text = store.currentList.name;
         }
-    return (location.pathname === '/community' ? (
+    return auth.user ? (location.pathname === '/community' ? (
         <div id="top5-statusbar">
             <Typography variant="h4">Community Lists</Typography>
         </div>) : location.pathname === '/' && auth.user ? (
@@ -45,7 +45,7 @@ function Statusbar() {
         <div id="top5-statusbar">
             <Typography variant="h4">{store.filter}</Typography>
         </div>
-    ));
+    )) : null;
 }
 
 export default Statusbar;
