@@ -88,7 +88,7 @@ function NavBar() {
     return (
         <div className='navbar'>
             <div className='navbar-left'>
-                <IconButton onClick={(event) => {handleChangePage(event, '/')}} disabled={store.currentList || !auth.user} aria-label='edit'>
+                <IconButton onClick={(event) => {handleChangePage(event, '/')}} disabled={store.currentList || auth.user.username === " "} aria-label='edit'>
                     <HomeIcon style={{ fontSize: '36pt' }} />
                 </IconButton>
                 <IconButton onClick={(event) => {handleChangePage(event, '/all')}} disabled={store.currentList} aria-label='edit'>

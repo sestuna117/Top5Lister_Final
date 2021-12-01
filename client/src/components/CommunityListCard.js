@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { GlobalStoreContext } from '../store'
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
@@ -13,8 +13,8 @@ import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button, Typography } from '@mui/material';
 import AuthContext from '../auth';
-import ExpandedContent from './ExpandedContent';
 import { useLocation } from 'react-router';
+import CommunityExpandedContent from './CommunityExpandedContent';
 
 /*
     This is a card in our list of top 5 lists. It lets select
@@ -23,14 +23,15 @@ import { useLocation } from 'react-router';
     
     @author McKilla Gorilla
 */
-function ListCard(props) {
+function CommunityListCard(props) {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext)
     const [listOpened, setListOpened] = useState(false);
+    const [items, setItems] = useState([]);
     const { listInfo } = props;
     let location = useLocation();
     let publishDate = "";
-    let datePieces = listInfo.published.split('-')
+    let datePieces = listInfo.updated.split('-')
     switch (datePieces[1]) {
         case '01':
             publishDate = "Jan";
@@ -71,26 +72,29 @@ function ListCard(props) {
     }
     publishDate += (' ' + datePieces[2] + ', ' + datePieces[0]);
 
-    function handleEditList(event, id) {
-        if (!event.target.disabled) {
-            // CHANGE THE CURRENT LIST
-            store.setCurrentList(id);
+    useEffect(() => {
+        if (!listInfo) {
+            return;
         }
-    }
+        listInfo.items.sort((a, b) => b.points - a.points)
+        let sortedItems = listInfo.items.slice(0, 5);
+
+        setItems(sortedItems);
+    }, [listInfo])
 
     // Handles a click on the like button
     const handleLikeList = (event, id) => {
-        store.likeList(id);
+        store.likeAggList(id);
     }
 
     // Handles a click on the dislike button
     const handleDislikeList = (event, id) => {
-        store.dislikeList(id);
+        store.dislikeAggList(id);
     }
 
     // Handles a click on the dropdown to view a list
     const handleOpenList = (event, id) => {
-        store.viewList(id)
+        store.viewAggList(id)
         setListOpened(true);
     }
 
@@ -109,7 +113,7 @@ function ListCard(props) {
             id={listInfo._id}
             key={listInfo._id}
             sx={{ marginTop: '15px', display: 'flex', p: 1 }}
-            className={listInfo.published !== '1970-01-01' ? 'published-list' : ''}
+            className='published-list'
             style={{
                 width: '100%',
                 backgroundColor: '#fffff2',
@@ -121,7 +125,6 @@ function ListCard(props) {
             <div className='list-card-header'>
                 <Box sx={{ p: 1 }}>
                     <Typography fontWeight='bold'>{listInfo.name}</Typography>
-                    <Typography sx={{ fontSize: 14 }}>By: {<span>{listInfo.owner}</span>}</Typography>
                 </Box>
                 <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
                     <IconButton className={auth.user ? listInfo.likes.includes(auth.user.username) ? 'is-on' : null : null} onClick={(event) => {
@@ -147,19 +150,10 @@ function ListCard(props) {
                     </IconButton> : null}
                 </Box>
             </div>
-            {listOpened ? <ExpandedContent listInfo={listInfo} /> : null}
+            {listOpened ? <CommunityExpandedContent listInfo={listInfo} items={items} /> : null}
             <div className='list-card-footer'>
                 <Box sx={{ p: 1, marginTop: '10px' }}>
-                    {listInfo.published !== '1970-01-01' ?
-                        <Typography sx={{ fontSize: 14, fontWeight: 'bold' }}>Published: <span style={{ color: '#79ae5a' }}>{publishDate}</span></Typography>
-                        : <Button sx={{
-                            padding: '0', color: 'red', textDecoration: 'underline',
-                            ':hover': { bgcolor: 'transparent', color: 'red', boxShadow: 'none', textDecoration: 'underline', fontWeight: 'bold' }
-                        }}
-                            onClick={(event) => { handleEditList(event, listInfo._id) }}
-                            aria-label='edit'>
-                            Edit
-                        </Button>}
+                    <Typography sx={{ fontSize: 14, fontWeight: 'bold' }}>Updated: <span style={{ color: '#79ae5a' }}>{publishDate}</span></Typography>
                 </Box>
                 <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
                     <Typography sx={{ fontSize: 14 }}>Views: <span style={{ color: '#972c24', fontWeight: 'bold' }}>{listInfo.views}</span></Typography>
@@ -186,4 +180,4 @@ function ListCard(props) {
     );
 }
 
-export default ListCard;
+export default CommunityListCard;

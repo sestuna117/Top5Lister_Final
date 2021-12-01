@@ -29,6 +29,13 @@ export const updateTop5ListById = (id, payload) => api.put(`/top5list/${id}`, pa
 export const deleteTop5ListById = (id) => api.delete(`/top5list/${id}`)
 export const getTop5ListById = (id) => api.get(`/top5list/${id}`)
 
+export const createAggregatedTop5List = (payload) => api.post(`/aggtop5list/`, payload)
+export const getAllAggregatedTop5Lists = () => api.get(`/aggtop5lists/`)
+export const getAggregatedTop5ListPairs = () => api.get(`/aggtop5listpairs/`)
+export const updateAggregatedTop5ListById = (id, payload) => api.put(`/aggtop5list/${id}`, payload)
+export const deleteAggregatedTop5ListById = (id) => api.delete(`/aggtop5list/${id}`)
+export const getAggregatedTop5ListById = (id) => api.get(`/aggtop5list/${id}`)
+
 export const getLoggedIn = () => api.get(`/loggedIn/`);
 export const registerUser = (payload) => api.post(`/register/`, payload)
 export const loginUser = (payload) => api.post(`/login/`, payload)
@@ -43,6 +50,13 @@ const apis = {
     updateTop5ListById,
     deleteTop5ListById,
     getTop5ListById,
+
+    createAggregatedTop5List,
+    getAllAggregatedTop5Lists,
+    getAggregatedTop5ListPairs,
+    updateAggregatedTop5ListById,
+    deleteAggregatedTop5ListById,
+    getAggregatedTop5ListById,
 
     getLoggedIn,
     registerUser,

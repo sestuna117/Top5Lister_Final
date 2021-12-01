@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { GlobalStoreContext } from '../store'
-import ListCard from './ListCard.js'
+import CommunityListCard from './CommunityListCard.js'
 import List from '@mui/material/List';
 import AuthContext from '../auth';
 import NavBar from './NavBar';
@@ -24,7 +24,7 @@ const CommunityListPage = () => {
         if (!store) {
             return;
         }
-        let searchedLists = store.listInfo.filter(list => list.name.includes(store.filter)).slice();
+        let searchedLists = store.aggListInfo.filter(list => list.name.includes(store.filter)).slice();
         switch (store.sorter) {
             case 1:
                 searchedLists.sort((a, b) => Date.parse(b.published) - Date.parse(a.published))
@@ -52,7 +52,7 @@ const CommunityListPage = () => {
                 <List sx={{ width: '90%', left: '5%' }}>
                     {
                         lists.map((pair) => (
-                            <ListCard
+                            <CommunityListCard
                                 key={pair._id}
                                 listInfo={pair}
                                 selected={false}

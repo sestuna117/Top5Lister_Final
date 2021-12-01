@@ -24,7 +24,6 @@ const HomeScreen = () => {
         if (!store) {
             return;
         }
-        console.log(store.sorter)
         let ownedLists = store.listInfo.filter(pair => pair.owner === auth.user.username)
             .filter(list => list.name.includes(store.filter)).slice();
         switch (store.sorter) {
