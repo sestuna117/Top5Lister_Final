@@ -24,7 +24,7 @@ const CommunityListPage = () => {
         if (!store) {
             return;
         }
-        let searchedLists = store.aggListInfo.filter(list => list.name.includes(store.filter)).slice();
+        let searchedLists = store.aggListInfo.filter(list => list.name.toLowerCase().includes(store.filter.toLowerCase())).slice();
         switch (store.sorter) {
             case 1:
                 searchedLists.sort((a, b) => Date.parse(b.updated) - Date.parse(a.updated))

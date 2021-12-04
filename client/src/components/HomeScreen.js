@@ -25,7 +25,7 @@ const HomeScreen = () => {
             return;
         }
         let ownedLists = store.listInfo.filter(pair => pair.owner === auth.user.username)
-            .filter(list => list.name.includes(store.filter)).slice();
+            .filter(list => list.name.toLowerCase().includes(store.filter.toLowerCase())).slice();
         switch (store.sorter) {
             case 1:
                 ownedLists.sort((a, b) => Date.parse(b.published) - Date.parse(a.published))
