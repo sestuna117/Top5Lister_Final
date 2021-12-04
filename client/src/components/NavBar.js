@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { Box } from '@mui/system';
+import { useLocation } from 'react-router';
 
 /*
     Our Status bar React component goes at the bottom of our UI.
@@ -24,6 +25,7 @@ function NavBar() {
     const [anchorEl, setAnchorEl] = useState(null)
     const isMenuOpen = Boolean(anchorEl);
     const [text, setText] = useState('');
+    let location = useLocation();
     
     // Response for when a keyboard key is pressed in search bar
     function handleChange(event) {
@@ -77,8 +79,8 @@ function NavBar() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
-            <MenuItem onClick={() => {handleSort(1)}}><Button>Publish Date (Newest)</Button></MenuItem>
-            <MenuItem onClick={() => {handleSort(2)}}><Button>Publish Date (Oldest)</Button></MenuItem>
+            <MenuItem onClick={() => {handleSort(1)}}><Button>{location.pathname === '/community' ? 'Update' : 'Publish'} Date (Newest)</Button></MenuItem>
+            <MenuItem onClick={() => {handleSort(2)}}><Button>{location.pathname === '/community' ? 'Update' : 'Publish'} Date (Oldest)</Button></MenuItem>
             <MenuItem onClick={() => {handleSort(3)}}><Button>Views</Button></MenuItem>
             <MenuItem onClick={() => {handleSort(4)}}><Button>Likes</Button></MenuItem>
             <MenuItem onClick={() => {handleSort(5)}}><Button>Dislikes</Button></MenuItem>

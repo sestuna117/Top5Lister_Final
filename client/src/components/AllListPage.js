@@ -21,7 +21,7 @@ const AllListPage = () => {
             return;
         }
         let searchedLists = store.listInfo.filter(list => list.published !== '1970-01-01')
-            .filter(list => list.name.includes(store.filter)).slice();
+            .filter(list => list.name.toLowerCase().includes(store.filter.toLowerCase())).slice();
         switch (store.sorter) {
             case 1:
                 searchedLists.sort((a, b) => Date.parse(b.published) - Date.parse(a.published))
