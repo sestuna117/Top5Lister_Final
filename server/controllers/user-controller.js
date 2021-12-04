@@ -154,14 +154,17 @@ loginUser = async (req, res) => {
             .json({ errorMessage: "Please enter all required fields." });
     }
 
-    const existingUser = await User.findOne({ email: email });
+    let existingUser = await User.findOne({ email: email });
     if (!existingUser) {
-        return res
-            .status(401)
-            .json({
-                success: false,
-                errorMessage: "Wrong email or password."
-            })
+        existingUser = await User.findOne({ username: email });
+        if (!existingUser) {
+            return res
+                .status(401)
+                .json({
+                    success: false,
+                    errorMessage: "Wrong email/username or password."
+                })
+        }
     }
     const correctPass = await bcrypt.compare(password, existingUser.passwordHash);
     if (!correctPass) {
@@ -169,7 +172,7 @@ loginUser = async (req, res) => {
             .status(401)
             .json({
                 success: false,
-                errorMessage: "Wrong email or password."
+                errorMessage: "Wrong email/username or password."
             })
     }
 
