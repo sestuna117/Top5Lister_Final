@@ -680,13 +680,13 @@ function GlobalStoreContextProvider(props) {
         })
         console.log(items)
         async function removeFromAggList(name, items) {
-            let existingAggList = store.aggListInfo.findIndex(list => list.name === name);
+            let existingAggList = store.aggListInfo.findIndex(list => list.name.toLowerCase() === name.toLowerCase());
             console.log(existingAggList);
             if (existingAggList >= 0) {
                 let aggList = store.aggListInfo[existingAggList];
                 let aggListItems = aggList.items;
                 items.forEach(newItem => {
-                    let existingItem = aggListItems.findIndex(oldItem => oldItem.name === newItem.name)
+                    let existingItem = aggListItems.findIndex(oldItem => oldItem.name.toLowerCase() === newItem.name.toLowerCase())
                     console.log('item name:' + newItem.name)
                     console.log(existingItem);
                     if (existingItem >= 0) {
@@ -770,18 +770,15 @@ function GlobalStoreContextProvider(props) {
 
         let items = [];
         newItems.forEach((item, index) => {
-            items.push({ name: item, points: 5 - index })
+            items.push({ name: item.charAt(0).toUpperCase() + item.slice(1).toLowerCase(), points: 5 - index })
         })
         async function addToAggList(newName, items) {
-            let existingAggList = store.aggListInfo.findIndex(list => list.name === newName);
-            console.log(existingAggList);
+            let existingAggList = store.aggListInfo.findIndex(list => list.name.toLowerCase() === newName.toLowerCase());
             if (existingAggList >= 0) {
                 let aggList = store.aggListInfo[existingAggList];
                 let aggListItems = aggList.items;
                 items.forEach(newItem => {
-                    let existingItem = aggListItems.findIndex(oldItem => oldItem.name === newItem.name)
-                    console.log('item name:' + newItem.name)
-                    console.log(existingItem);
+                    let existingItem = aggListItems.findIndex(oldItem => oldItem.name.toLowerCase() === newItem.name.toLowerCase())
                     if (existingItem >= 0) {
                         aggListItems[existingItem].points += newItem.points;
                     }
@@ -802,7 +799,7 @@ function GlobalStoreContextProvider(props) {
             else {
                 let time = new Date().toISOString().slice(0, 10)
                 let payload = {
-                    name: newName,
+                    name: newName.charAt(0).toUpperCase() + newName.slice(1).toLowerCase(),
                     items: items,
                     comments: [],
                     views: 0,
