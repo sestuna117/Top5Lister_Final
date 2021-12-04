@@ -90,7 +90,9 @@ function ListCard(props) {
 
     // Handles a click on the dropdown to view a list
     const handleOpenList = (event, id) => {
-        store.viewList(id)
+        if (listInfo.published !== '1970-01-01') {
+            store.viewList(id)
+        }
         setListOpened(true);
     }
 
@@ -124,22 +126,28 @@ function ListCard(props) {
                     <Typography sx={{ fontSize: 14 }}>By: {<span>{listInfo.owner}</span>}</Typography>
                 </Box>
                 <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
-                    <IconButton className={auth.user ? listInfo.likes.includes(auth.user.username) ? 'is-on' : null : null} onClick={(event) => {
-                        handleLikeList(event, listInfo._id)
-                    }} aria-label='like' disabled={auth.user ? auth.user.username === ' ' || auth.user.username === listInfo.owner : false} >
-                        {auth.user ? listInfo.likes.includes(auth.user.username) ?
-                            <ThumbUpIcon style={{ fontSize: '24pt' }} />
-                            : <ThumbUpOffAltIcon style={{ fontSize: '24pt' }} /> : <ThumbUpOffAltIcon style={{ fontSize: '24pt' }} />}
-                    </IconButton>
-                    <Typography>{listInfo.likes.length}</Typography>
-                    <IconButton onClick={(event) => {
-                        handleDislikeList(event, listInfo._id)
-                    }} aria-label='dislike' disabled={auth.user ? auth.user.username === ' ' || auth.user.username === listInfo.owner : false} >
-                        {auth.user ? listInfo.dislikes.includes(auth.user.username) ?
-                            <ThumbDownIcon style={{ fontSize: '24pt' }} />
-                            : <ThumbDownOffAltIcon style={{ fontSize: '24pt' }} /> : <ThumbDownOffAltIcon style={{ fontSize: '24pt' }} />}
-                    </IconButton>
-                    <Typography>{listInfo.dislikes.length}</Typography>
+                    {
+                        listInfo.published !== '1970-01-01' ?
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <IconButton className={auth.user ? listInfo.likes.includes(auth.user.username) ? 'is-on' : null : null} onClick={(event) => {
+                                    handleLikeList(event, listInfo._id)
+                                }} aria-label='like' disabled={auth.user ? auth.user.username === ' ' : false} >
+                                    {auth.user ? listInfo.likes.includes(auth.user.username) ?
+                                        <ThumbUpIcon style={{ fontSize: '24pt' }} />
+                                        : <ThumbUpOffAltIcon style={{ fontSize: '24pt' }} /> : <ThumbUpOffAltIcon style={{ fontSize: '24pt' }} />}
+                                </IconButton>
+                                <Typography>{listInfo.likes.length}</Typography>
+                                <IconButton onClick={(event) => {
+                                    handleDislikeList(event, listInfo._id)
+                                }} aria-label='dislike' disabled={auth.user ? auth.user.username === ' ' : false} >
+                                    {auth.user ? listInfo.dislikes.includes(auth.user.username) ?
+                                        <ThumbDownIcon style={{ fontSize: '24pt' }} />
+                                        : <ThumbDownOffAltIcon style={{ fontSize: '24pt' }} /> : <ThumbDownOffAltIcon style={{ fontSize: '24pt' }} />}
+                                </IconButton>
+                                <Typography>{listInfo.dislikes.length}</Typography>
+                            </Box>
+                            : null
+                    }
                     {auth.user.username === listInfo.owner && location.pathname === '/' ? <IconButton onClick={(event) => {
                         handleDeleteList(event, listInfo)
                     }} aria-label='delete'>
@@ -162,7 +170,10 @@ function ListCard(props) {
                         </Button>}
                 </Box>
                 <Box sx={{ p: 1, display: 'flex', alignItems: 'center' }}>
-                    <Typography sx={{ fontSize: 14 }}>Views: <span style={{ color: '#972c24', fontWeight: 'bold' }}>{listInfo.views}</span></Typography>
+                    {listInfo.published !== '1970-01-01' ?
+                        <Typography sx={{ fontSize: 14 }}>Views: <span style={{ color: '#972c24', fontWeight: 'bold' }}>{listInfo.views}</span></Typography>
+                        : null
+                    }
                     {listOpened ?
                         <IconButton style={{ padding: '0' }} onClick={(event) => {
                             handleCloseList(event)

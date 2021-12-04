@@ -28,7 +28,7 @@ function CommentsSection(props) {
         }
     }
 
-    return (
+    return listInfo.published !== '1970-01-01' ? (
         <div className={communityVer ? "com-comments-section" : "comments-section"}>
             <div className='comments-list'>
                 {listInfo.comments.map((comment, index) => (
@@ -49,7 +49,7 @@ function CommentsSection(props) {
                 onKeyPress={(event) => { handleKeyPress(event) }}
             />
         </div>
-    )
+    ) : null
 }
 
 export default CommentsSection

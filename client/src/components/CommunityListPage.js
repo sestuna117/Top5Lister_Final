@@ -27,10 +27,10 @@ const CommunityListPage = () => {
         let searchedLists = store.aggListInfo.filter(list => list.name.includes(store.filter)).slice();
         switch (store.sorter) {
             case 1:
-                searchedLists.sort((a, b) => Date.parse(b.published) - Date.parse(a.published))
+                searchedLists.sort((a, b) => Date.parse(b.updated) - Date.parse(a.updated))
                 break;
             case 2:
-                searchedLists.sort((a, b) => Date.parse(a.published) - Date.parse(b.published))
+                searchedLists.sort((a, b) => Date.parse(a.updated) - Date.parse(b.updated))
                 break;
             case 3:
                 searchedLists.sort((a, b) => b.views - a.views)
